@@ -6,6 +6,9 @@ body {
     1px -1px 0 #000,
     -1px 1px 0 #000,
     1px 1px 0 #000;  
+    font-family: 'Courgette', cursive;
+    /* font-family: 'Merienda', cursive; */
+    /* font-family: 'Gloria Hallelujah', cursive; */
 }
 h1 {
     color: red;
@@ -14,5 +17,5 @@ h2 {
     color: blue;
 }
 h3 {
-    color: purple;
+    color: rgb(110, 1, 110);
 }
