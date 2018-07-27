@@ -28,8 +28,9 @@
             <input type='submit'>
         </form>
     </div>
-    <div id='chat-log'></div>
-
+    <div><h3>Room messages:</h3>
+        <div id='chat-log'></div>
+    </div>
     <script>
         let chatForm = document.getElementById('chat-form')
         let chatLog = document.getElementById('chat-log')
@@ -46,10 +47,10 @@
             }
             document.getElementById('room-dropdown').value = ''
             chatLog.innerHTML = ''
-            if (roomDropdown==='dogs') {
-                body.style= 'background-color: black; color: white;'
+            if (roomDropdown === 'dogs') {
+                body.style = 'background-color: black; color: white;'
             } else if (roomDropdown === 'general') {
-                body.style= 'background-color: rgb(2, 228, 2); color: black;'
+                body.style = 'background-color: rgb(2, 228, 2); color: black;'
             }
             document.getElementById('messageBody').value = ''
 
@@ -96,13 +97,13 @@
                             return message.body;
                         } else if (message[0].body) {
                             messageArray = []
-                                for (let theMessage of message) {
-                                    theMessage = theMessage.body
-                                    messageArray.push(theMessage)
-                                }
-                                console.log(messageArray)
-                                return messageArray
-                            
+                            for (let theMessage of message) {
+                                theMessage = theMessage.body
+                                messageArray.push(theMessage)
+                            }
+                            console.log(messageArray)
+                            return messageArray
+
                         } else {
                             throw ("no messages")
                         }
