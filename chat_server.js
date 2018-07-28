@@ -41,14 +41,15 @@ function handleRequest(request, response) {
 
       if (request.method === "POST") {
         console.log('Parsing the POST')
+        if (!roomId) {
+          roomId = 'general'
+        }
         assistant.parsePostParams((params) => {
           let message = {
             author: 'Anonymous',
-            body: params.body || 'no body',
-            when: new Date().toISOString()
-          }
-          if (!roomId) {
-            roomId = 'general'
+            body: params.body || 'nothing',
+            when: new Date().toISOString(),
+            room: roomId
           }
           house.sendMessageToRoom(roomId, message);
           let room = house.roomWithId(roomId)
@@ -98,8 +99,9 @@ function handleRequest(request, response) {
         assistant.parsePostParams((params) => {
           let message = {
             author: 'Anonymous',
-            body: params.body || 'no body',
-            when: new Date().toISOString()
+            body: params.body || 'nothing',
+            when: new Date().toISOString(),
+            room: roomId
           }
           house.sendMessageToRoom(roomId, message);
           let room = house.roomWithId(roomId)
@@ -125,6 +127,15 @@ function handleRequest(request, response) {
         }
 
       }
+    } else if (path === '/rooms') {
+
+        allTheRooms = house.allRoomIds()
+        sendResponse(allTheRooms)
+
+    } else if (path === `/postRoom/${roomId}`) {
+        console.log(roomId)
+        house.roomWithId(roomId)
+        console.log(house.allRooms)
     } else {
       let fileName = request.url.slice(1)
       assistant.sendFile(fileName)

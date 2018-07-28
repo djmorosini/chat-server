@@ -19,3 +19,80 @@ h2 {
 h3 {
     color: rgb(110, 1, 110);
 }
+#room-list {
+    position: absolute;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: solid black 1px;
+    padding: 10px;
+}
+#room-list:hover {
+    display: inline-block;
+    color: yellow;
+}
+#show-rooms:hover + #room-list {
+    display: inline-block;
+    color: yellow;
+}
+#show-rooms {
+    width: 110px;
+    padding: 5px;
+    background-color: black;
+}
+#show-rooms:hover {
+    background-color:darkslategray;
+    cursor: default;
+}
+#drop-title {
+    text-decoration: underline;
+    font-size: 16px;
+}
+#chat-log {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 70%;
+    height: 200px;
+    padding: 10px;
+    overflow: auto;
+    scroll-snap-type: mandatory;
+}
+#room-require {
+    font-size: 11px;
+    font-family: 'Merienda', cursive;
+    color: rgb(201, 199, 199);
+}
+#invalid-alert {
+    display: none;
+    position: absolute;
+    left: 100px;
+    top: 200px;
+    background-color: rgba(182, 3, 3, 0.8);
+    border: 1px solid black;
+    padding: 10px;
+}
+button {
+    font-family: 'Merienda', cursive;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
+    padding: 5px;
+
+}
+#submit-button {
+    font-family: 'Merienda', cursive;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid black;
+    padding: 5px;
+}
+#room-dropdown {
+    font-family: 'Merienda', cursive;
+    background-color: black;
+    border: 1px solid white;
+    color: white;
+    padding: 2px;
+}
+#messageBody {
+    font-family: 'Merienda', cursive;
+    background-color: black;
+    border: 1px solid white;
+    color: white;
+    padding: 2px;
+}
