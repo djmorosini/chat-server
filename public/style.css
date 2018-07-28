@@ -38,6 +38,7 @@ h3 {
     width: 110px;
     padding: 5px;
     background-color: black;
+    border: 1px solid blue;
 }
 #show-rooms:hover {
     background-color:darkslategray;
@@ -95,4 +96,31 @@ button {
     border: 1px solid white;
     color: white;
     padding: 2px;
+}
+@media only screen and (max-device-width: 480px){
+    body {
+        font-size: 40px;
+    }
+    #show-rooms {
+        width: 275px;
+    }
+    button {
+        font-size: 30px;
+    }
+    #submit-button {
+        font-size: 30px;
+    }
+    #room-require {
+        font-size: 26px;
+    }
+    #messageBody {
+        height: 60px;
+        width: 300px;
+        font-size: 30px;
+    }
+    #room-dropdown {
+        height: 60px;
+        width: 300px;
+        font-size: 30px;
+    }
 }
