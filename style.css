@@ -16,23 +16,23 @@ h1 {
 h2 {
     color: blue;
 }
-h3 {
+#room-messages-title {
     color: rgb(110, 1, 110);
 }
 #room-list {
     position: absolute;
     display: none;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(2, 5, 180, 0.9);
     border: solid black 1px;
     padding: 10px;
 }
 #room-list:hover {
     display: inline-block;
-    color: yellow;
+    color: white;
 }
 #show-rooms:hover + #room-list {
     display: inline-block;
-    color: yellow;
+    color: white;
 }
 #show-rooms {
     width: 110px;
@@ -50,11 +50,13 @@ h3 {
 }
 #chat-log {
     background-color: rgba(0, 0, 0, 0.5);
-    width: 70%;
+    width: 80%;
     height: 200px;
-    padding: 10px;
     overflow: auto;
     scroll-snap-type: mandatory;
+    font-family: 'Merienda', cursive;
+    /* background-image: url("images/happyGroot.jpg"); */
+
 }
 #room-require {
     font-size: 11px;
@@ -97,6 +99,12 @@ button {
     color: white;
     padding: 2px;
 }
+.message-class {
+    background-color: rgba(43, 0, 199, 0.7);
+    padding: 5px;
+    border: 1px solid black;
+    margin: 5px;
+}
 @media only screen and (max-device-width: 480px){
     body {
         font-size: 40px;
@@ -122,5 +130,16 @@ button {
         height: 60px;
         width: 300px;
         font-size: 30px;
+    }
+    #chat-log {
+        width: 95%;
+        font-size: 14px;
+        height: 400px;
+    }
+    #drop-title {
+        font-size: 42px;
+    }
+    .message-class {
+        margin: 10px;
     }
 }

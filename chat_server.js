@@ -133,9 +133,7 @@ function handleRequest(request, response) {
         sendResponse(allTheRooms)
 
     } else if (path === `/postRoom/${roomId}`) {
-        console.log(roomId)
         house.roomWithId(roomId)
-        console.log(house.allRooms)
     } else {
       let fileName = request.url.slice(1)
       assistant.sendFile(fileName)

@@ -41,7 +41,7 @@
         </form>
     </div>
     <div>
-        <h3>Room messages:</h3>
+        <h2 id='room-messages-title'>Room messages:</h2>
         <div id='chat-log'></div>
         <div id='invalid-alert'>Room ID must be only lowercase letters.
             <br>
@@ -54,7 +54,7 @@
         let chatForm = document.getElementById('chat-form')
         let chatLog = document.getElementById('chat-log')
         let showMessageButton = document.getElementById('showRoomMessages')
-        let roomDropdown
+        let roomDropdown = 'general'
         let body = document.querySelector('body')
         let roomList = document.getElementById('room-list')
         let theRooms = document.getElementById('the-rooms')
@@ -73,7 +73,7 @@
 
             }).then(response => response.json())
                 .then(rooms => {
-                    console.log(rooms)
+                    // console.log(rooms)
                     theRooms.innerHTML += rooms.join('<br>');
                 })
         }
@@ -82,17 +82,19 @@
             roomDropdown = document.getElementById('room-dropdown').value
             if (roomDropdown.includes(' ')) {
                 roomDropdown = roomDropdown.split(' ').join('')
-                console.log(roomDropdown)
+                // console.log(roomDropdown)
             }
             if (roomDropdown != '') {
                 let regex = /^[a-z]+$/
                 if (regex.test(roomDropdown)) {
                     document.getElementById('room-name').textContent = 'Room name: ' + roomDropdown
+
                     fetch(`/postRoom/${roomDropdown}`, {
                         method: 'POST',
                     }).then(response => response.json())
-                        .then(room => {
-                            chatLog.innerHTML = messages.map(message => message.body).join('<br>')
+                        .then(messages => {
+                            // console.log("post room" + messages)
+                            chatLog.innerHTML = messages.map(message => message.body).join('')
                         })
                     populateRoomList()
 
@@ -106,15 +108,17 @@
             chatLog.innerHTML = ''
             if (roomDropdown === '') {
                 document.getElementById('room-name').textContent = 'Room name: all'
-                body.style = 'background-color: rgb(3, 194, 3); color: yellow;'
+                body.style = 'background-color: rgb(3, 194, 3); color: white;'
             } else if (roomDropdown === 'dogs') {
                 body.style = 'background-color: black; color: white;'
-                chatLog.style = 'color: yellow; background-color: rgba(255, 255, 255, 0.5);'
+                chatLog.style = 'background-color: rgba(255, 255, 255, 0.5);'
+            } else if (roomDropdown === 'groot') {
+                body.style = 'background-image: url("images/grootExplosion.jpg"), url("images/happyGroot.jpg"); background-position: bottom right, top right; background-size: 50% 50%, 50% 50%; background-repeat:no-repeat;'
             } else if (roomDropdown === 'general') {
                 body.style = 'background-color: rgb(2, 83, 2); color: white;'
             } else {
-                // body.style = 'background-color: rgb(2, 83, 2);'
-                // chatLog.style = 'background-color: rgba(0, 0, 0, 0.5); color: white;'
+                body.style = 'background-color: rgb(2, 83, 2); color: white;'
+                chatLog.style = 'background-color: rgba(0, 0, 0, 0.5);'
             }
             document.getElementById('messageBody').value = ''
 
@@ -125,7 +129,10 @@
             let params = new URLSearchParams();
             params.append('body', message);
             document.getElementById('messageBody').value = ''
-
+            console.log("input element: " + inputElement)
+            console.log("message: " + message)
+            console.log("params: " + params)
+            
             if (roomDropdown === '' || roomDropdown === 'general') {
                 chatPath = '/chat'
             } else {
@@ -137,7 +144,8 @@
                 body: params
             }).then(response => response.json())
                 .then(messages => {
-                    chatLog.innerHTML = messages.map(message => message.body).join('<br>')
+                    // console.log(messages)
+                    chatLog.innerHTML = messages.map(message => "<div class='message-class'><u>By:</u> " + message.author +" <u>At:</u> "+ message.when + "<br><u>Body:</u> " + message.body + " <u>Room:</u> " + message.room + "</div>").join('')
                     populateRoomList()
                 })
             event.preventDefault();
@@ -151,6 +159,7 @@
             } else {
                 chatPath = '/chat' + "/" + roomDropdown
             }
+            // console.log(chatPath)
 
             function flattenDeep(arr1) {
                 return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
@@ -162,25 +171,28 @@
             }).then(response => response.json())
                 .then(messages => {
                     allMessagesArray = messages.map((message) => {
-                        console.log(message);
+                        // console.log(message);
                         if (message.body) {
-                            return message.body;
+                            return "<div class='message-class'><u>By:</u> " + message.author +" <u>At:</u> "+ message.when + "<br><u>Body:</u> " + message.body + " <u>Room:</u> " + message.room + "</div>";
                         } else if (message.length > 0) {
                             messageArray = []
                             if (message.length > 1) {
                                 for (let theMessage of message) {
-                                    theMessage = theMessage.body
+                                    theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author +" <u>At:</u> "+ theMessage.when + "<br><u>Body:</u> " + theMessage.body + " <u>Room:</u> " + theMessage.room + "</div>";
                                     messageArray.push(theMessage)
                                 }
                             } else {
-                                theMessage = message[0].body
+                                theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> "+message[0].when + "<br><u>Body:</u> " + message[0].body + " <u>Room:</u> " + message[0].room + "</div>";
                                 messageArray.push(theMessage)
                             }
                             return messageArray
 
                         }
                     })
-                    chatLog.innerHTML = flattenDeep(allMessagesArray).join('<br>')
+                    allMessagesArray = allMessagesArray.filter(function (element) {
+                        return element !== undefined;
+                    });
+                    chatLog.innerHTML = flattenDeep(allMessagesArray).join('')
                 })
 
         })
