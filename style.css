@@ -55,7 +55,7 @@ h2 {
     overflow: auto;
     scroll-snap-type: mandatory;
     font-family: 'Merienda', cursive;
-    /* background-image: url("images/happyGroot.jpg"); */
+    /* background-image: url("images/dallasField.jpg"); */
 
 }
 #room-require {
@@ -93,6 +93,13 @@ button {
     padding: 2px;
 }
 #messageBody {
+    font-family: 'Merienda', cursive;
+    background-color: black;
+    border: 1px solid white;
+    color: white;
+    padding: 2px;
+}
+#messageAuthor {
     font-family: 'Merienda', cursive;
     background-color: black;
     border: 1px solid white;

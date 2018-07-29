@@ -33,9 +33,14 @@
     <button id='submit-room' onclick='submitRoom()'>Submit room</button>
     <br>
     <br>
-    <label for='messageBody'>Enter message:</label>
     <div id='form-input'>
         <form id='chat-form' action='chat' method='POST'>
+            <label for='messageAuthor'>Enter your name:</label>
+            <br>
+            <input autocomplete="off" id='messageAuthor' type='text' author='author'>
+            <br>
+            <label for='messageBody'>Enter message:</label>
+            <br>
             <input autocomplete="off" id='messageBody' type='text' author='body'>
             <input id='submit-button' type='submit'>
         </form>
@@ -110,10 +115,10 @@
                 document.getElementById('room-name').textContent = 'Room name: all'
                 body.style = 'background-color: rgb(3, 194, 3); color: white;'
             } else if (roomDropdown === 'dogs') {
-                body.style = 'background-color: black; color: white;'
+                body.style = 'background-color: black; color: white; background-image: url("images/dallasField.jpg"); background-size: 100%; background-position: center; background-repeat:no-repeat;'
                 chatLog.style = 'background-color: rgba(255, 255, 255, 0.5);'
             } else if (roomDropdown === 'groot') {
-                body.style = 'background-image: url("images/grootExplosion.jpg"), url("images/happyGroot.jpg"); background-position: bottom right, top right; background-size: 50% 50%, 50% 50%; background-repeat:no-repeat;'
+                body.style = 'background-image: url("images/grootExplosion.jpg"), url("images/happyGroot.jpg"); background-position: bottom right, top right; background-size: 600px, 600px; background-repeat:no-repeat;'
             } else if (roomDropdown === 'general') {
                 body.style = 'background-color: rgb(2, 83, 2); color: white;'
             } else {
@@ -125,14 +130,17 @@
         }
         chatForm.addEventListener('submit', (event) => {
             let inputElement = chatForm.querySelector('input[author=body]')
+            let authorElement = chatForm.querySelector('input[author=author]')
+            let author = authorElement.value
             let message = inputElement.value;
             let params = new URLSearchParams();
+            params.append('author', author);
             params.append('body', message);
             document.getElementById('messageBody').value = ''
-            console.log("input element: " + inputElement)
+            console.log("input element: " + inputElement.value)
             console.log("message: " + message)
-            console.log("params: " + params)
-            
+            console.log("bodyParams: " + params.body + " authorParams: " + params.author)
+
             if (roomDropdown === '' || roomDropdown === 'general') {
                 chatPath = '/chat'
             } else {
@@ -141,11 +149,12 @@
 
             fetch(chatPath, {
                 method: 'POST',
-                body: params
+                body: params,
+                author: params
             }).then(response => response.json())
                 .then(messages => {
                     // console.log(messages)
-                    chatLog.innerHTML = messages.map(message => "<div class='message-class'><u>By:</u> " + message.author +" <u>At:</u> "+ message.when + "<br><u>Body:</u> " + message.body + " <u>Room:</u> " + message.room + "</div>").join('')
+                    chatLog.innerHTML = messages.map(message => "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + message.when + "<br><u>Body:</u> " + message.body + " <u>Room:</u> " + message.room + "</div>").join('')
                     populateRoomList()
                 })
             event.preventDefault();
@@ -173,16 +182,16 @@
                     allMessagesArray = messages.map((message) => {
                         // console.log(message);
                         if (message.body) {
-                            return "<div class='message-class'><u>By:</u> " + message.author +" <u>At:</u> "+ message.when + "<br><u>Body:</u> " + message.body + " <u>Room:</u> " + message.room + "</div>";
+                            return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + message.when + "<br><u>Body:</u> " + message.body + " <u>Room:</u> " + message.room + "</div>";
                         } else if (message.length > 0) {
                             messageArray = []
                             if (message.length > 1) {
                                 for (let theMessage of message) {
-                                    theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author +" <u>At:</u> "+ theMessage.when + "<br><u>Body:</u> " + theMessage.body + " <u>Room:</u> " + theMessage.room + "</div>";
+                                    theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author + " <u>At:</u> " + theMessage.when + "<br><u>Body:</u> " + theMessage.body + " <u>Room:</u> " + theMessage.room + "</div>";
                                     messageArray.push(theMessage)
                                 }
                             } else {
-                                theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> "+message[0].when + "<br><u>Body:</u> " + message[0].body + " <u>Room:</u> " + message[0].room + "</div>";
+                                theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> " + message[0].when + "<br><u>Body:</u> " + message[0].body + " <u>Room:</u> " + message[0].room + "</div>";
                                 messageArray.push(theMessage)
                             }
                             return messageArray
