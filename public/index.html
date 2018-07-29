@@ -137,9 +137,6 @@
             params.append('author', author);
             params.append('body', message);
             document.getElementById('messageBody').value = ''
-            console.log("input element: " + inputElement.value)
-            console.log("message: " + message)
-            console.log("bodyParams: " + params.body + " authorParams: " + params.author)
 
             if (roomDropdown === '' || roomDropdown === 'general') {
                 chatPath = '/chat'

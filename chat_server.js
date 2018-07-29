@@ -98,7 +98,7 @@ function handleRequest(request, response) {
         console.log('Parsing the POST')
         assistant.parsePostParams((params) => {
           let message = {
-            author: 'Anonymous',
+            author: params.author || 'Anonymous',
             body: params.body || 'nothing',
             when: new Date().toISOString(),
             room: roomId
