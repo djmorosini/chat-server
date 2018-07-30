@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(2, 83, 2);
+    background-color: gray;
     color: white;
     text-shadow:
     -1px -1px 0 #000,
@@ -7,6 +7,9 @@ body {
     -1px 1px 0 #000,
     1px 1px 0 #000;  
     font-family: 'Courgette', cursive;
+    background-image: url("images/webBackground.jpg");
+    background-position: bottom left;
+    background-repeat: no-repeat;
     /* font-family: 'Merienda', cursive; */
     /* font-family: 'Gloria Hallelujah', cursive; */
 }
@@ -14,10 +17,14 @@ h1 {
     color: red;
 }
 h2 {
+    padding-top: 5px;
     color: blue;
 }
 #room-messages-title {
-    color: rgb(110, 1, 110);
+    color: blue;
+    position: absolute;
+    margin-left: 10px;
+    z-index: 1;
 }
 #room-list {
     position: absolute;
@@ -55,8 +62,12 @@ h2 {
     overflow: auto;
     scroll-snap-type: mandatory;
     font-family: 'Merienda', cursive;
-    /* background-image: url("images/dallasField.jpg"); */
-
+    padding-top: 30px;
+    position: relative;
+    top: 20px;
+    z-index: 0;
+    /* background-image: url("images/webBackground.jpg");
+    background-image: url("images/lightsBackground.jpg"); */
 }
 #room-require {
     font-size: 11px;
@@ -112,6 +123,15 @@ button {
     border: 1px solid black;
     margin: 5px;
 }
+#wrapper {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: fit-content;
+    padding: 0px 5px 0 5px;
+    margin-top: 5px;
+ }
+ #form-input {
+     padding-bottom: 5px;
+ }
 @media only screen and (max-device-width: 480px){
     body {
         font-size: 40px;
@@ -133,20 +153,29 @@ button {
         width: 300px;
         font-size: 30px;
     }
+    #messageAuthor {
+        height: 60px;
+        width: 300px;
+        font-size: 30px;
+    }
     #room-dropdown {
         height: 60px;
         width: 300px;
         font-size: 30px;
     }
     #chat-log {
-        width: 95%;
+        width: 100%;
         font-size: 14px;
         height: 400px;
+        position: relative;
+        top: 60px;
+        padding-top: 60px;
     }
     #drop-title {
         font-size: 42px;
     }
     .message-class {
         margin: 10px;
+        font-size: 88%;
     }
 }
