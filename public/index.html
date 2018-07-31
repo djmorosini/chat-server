@@ -22,7 +22,7 @@
     </div>
     <div id='wrapper'>
         <h2 id='room-name'>Room name: general</h2>
-        <button id='showRoomMessages'>Get all messages</button>
+        <button id='showRoomMessages'>Get all messages</button> <button onclick='startAutoRefresh()'>Start Auto Refresh</button> <button onclick='endAutoRefresh()'>End Auto Refresh</button>
         <br>
         <input type='text' id='author-name-search' placeholder="Author Name" />
         <button id='author-search-button'>Get messages by author name</button>
@@ -77,8 +77,62 @@
         let body = document.querySelector('body')
         let roomList = document.getElementById('room-list')
         let theRooms = document.getElementById('the-rooms')
+        let intervalId
 
         populateRoomList()
+        // setInterval(() => {showAllMessages()}, 10000)
+
+        function startAutoRefresh() {
+            intervalId = setInterval(() => {showAllMessages()}, 10000)
+        }
+
+        function endAutoRefresh() {
+            clearInterval(intervalId)
+        }
+
+        function showAllMessages() {
+            console.log("show all function")
+            if (roomDropdown === '') {
+                chatPath = '/chat'
+            } else {
+                chatPath = '/chat' + "/" + roomDropdown
+            }
+            // console.log(chatPath)
+
+            function flattenDeep(arr1) {
+                return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
+            }
+
+            fetch(chatPath, {
+                method: 'GET',
+
+            }).then(response => response.json())
+                .then(messages => {
+                    allMessagesArray = messages.map((message) => {
+                        // console.log(message);
+                        if (message.body) {
+                            return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
+                        } else if (message.length > 0) {
+                            messageArray = []
+                            if (message.length > 1) {
+                                for (let theMessage of message) {
+                                    theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author + " <u>At:</u> " + new Date(theMessage.when) + " <u>Room:</u> " + theMessage.room + "<br><u>Body:</u> " + theMessage.body + "</div>";
+                                    messageArray.push(theMessage)
+                                }
+                            } else {
+                                theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> " + new Date(message[0].when) + " <u>Room:</u> " + message[0].room + "<br><u>Body:</u> " + message[0].body + "</div>";
+                                messageArray.push(theMessage)
+                            }
+                            return messageArray
+
+                        }
+                    })
+                    allMessagesArray = allMessagesArray.filter(function (element) {
+                        return element !== undefined;
+                    });
+                    chatLog.innerHTML = flattenDeep(allMessagesArray).reverse().join('')
+                })
+        }
 
         function closeAlert() {
             let alert = document.getElementById('invalid-alert')
