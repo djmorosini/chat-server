@@ -5,9 +5,6 @@ const House = require('./lib/house')
 const port = process.env.PORT || 5000;
 let house = new House()
 
-// const Message = require('./lib/message')
-// let getNumber = 1
-
 http.createServer(handleRequest).listen(port)
 console.log("Listening on port: " + port);
 
@@ -24,9 +21,11 @@ function handleRequest(request, response) {
 
   if (request.url.includes('?')) {
     extraRequest = request.url.split('?')[1]
-    [identifier, value] = extraRequest.split("=")
+    console.log(extraRequest.split("="))
+    let keyValues = extraRequest.split("=");
+    [identifier, value] = keyValues;
   }
-  
+
   function sendResponse(messages) {
     let data = JSON.stringify(messages);
     let type = mime.lookup('json')
@@ -57,17 +56,8 @@ function handleRequest(request, response) {
 
           sendResponse(messages)
         })
-      } else { // GET
+      } else {
 
-        // test messages
-        // if (getNumber === 1) {
-        //   dogMessage = new Message({ author: 'Dallas', body: 'woof' })
-        //   generalMessage = new Message({ author: 'Dylan', body: 'general message' })
-        //   house.sendMessageToRoom('general', generalMessage)
-        //   house.sendMessageToRoom('dogs', dogMessage)
-        //   // test messages
-        //   getNumber++
-        // }
         let allRooms = house.allRoomIds()
         let roomMessages = []
 
@@ -78,13 +68,31 @@ function handleRequest(request, response) {
             roomMessages.push(messagesSince)
           }
           sendResponse(roomMessages)
-        }
-        // else if (extraRequest && identifier==='body') {
-
-        // } else if (extraRequest && identifier==='author') {
-
-        // } 
-        else {
+        } else if (extraRequest && identifier === 'author') {
+          for (let roomId of allRooms) {
+            theRoom = house.roomWithId(roomId)
+            allMessages = theRoom.messagesSince(0)
+            console.log(allMessages)
+            for (let message of allMessages) {
+              console.log(message)
+              if (message.author === value) {
+                roomMessages.push(message)
+              }
+            }
+          }
+          sendResponse(roomMessages)
+        } else if (extraRequest && identifier === 'body') {
+          for (let roomId of allRooms) {
+            theRoom = house.roomWithId(roomId)
+            allMessages = theRoom.messagesSince(0)
+            for (let message of allMessages) {
+              if (message.body.includes(`${value}`)) {
+                roomMessages.push(message)
+              }
+            }
+          }
+          sendResponse(roomMessages)
+        } else {
           for (let roomId of allRooms) {
             theRoom = house.roomWithId(roomId)
             roomMessages.push(theRoom.messages)
@@ -111,17 +119,28 @@ function handleRequest(request, response) {
       } else {
 
         let room = house.roomWithId(roomId)
+        let roomMessages = []
 
         if (extraRequest && identifier === 'since') {
           let messages = room.messagesSince(value)
           sendResponse(messages)
-        }
-        // else if (extraRequest && identifier==='body') {
-
-        // } else if (extraRequest && identifier==='author') {
-
-        // } 
-        else {
+        } else if (extraRequest && identifier === 'author') {
+          let allMessages = room.messagesSince(0)
+          for (let message of allMessages) {
+            if (message.author === value) {
+              roomMessages.push(message)
+            }
+          }
+          sendResponse(roomMessages)
+        } else if (extraRequest && identifier === 'body') {
+          let allMessages = room.messagesSince(0)
+          for (let message of allMessages) {
+            if (message.body === value) {
+              roomMessages.push(message)
+            }
+          }
+          sendResponse(roomMessages)
+        } else {
           let messages = room.messagesSince(0)
           sendResponse(messages)
         }
@@ -129,11 +148,11 @@ function handleRequest(request, response) {
       }
     } else if (path === '/rooms') {
 
-        allTheRooms = house.allRoomIds()
-        sendResponse(allTheRooms)
+      allTheRooms = house.allRoomIds()
+      sendResponse(allTheRooms)
 
     } else if (path === `/postRoom/${roomId}`) {
-        house.roomWithId(roomId)
+      house.roomWithId(roomId)
     } else {
       let fileName = request.url.slice(1)
       assistant.sendFile(fileName)

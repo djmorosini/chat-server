@@ -22,7 +22,16 @@
     </div>
     <div id='wrapper'>
         <h2 id='room-name'>Room name: general</h2>
-        <button id='showRoomMessages'>Get messages</button>
+        <button id='showRoomMessages'>Get all messages</button>
+        <br>
+        <input type='text' id='author-name-search' placeholder="Author Name" />
+        <button id='author-search-button'>Get messages by author name</button>
+        <br>
+        <input type='text' id='body-search' placeholder="Text to search" />
+        <button id='body-search-button'>Find messages with text</button>
+        <br>
+        <input type='text' id='time-search' placeholder="Messages Since" />
+        <button id='time-search-button'>Find messages since</button>
         <br>
         <br>
         <label for='room-dropdown'>Enter name of room to join:
@@ -30,7 +39,7 @@
             <span id='room-require'>[Must be only lowercase letters.]</span>
         </label>
         <br>
-        <input type='text' id='room-dropdown'></input>
+        <input type='text' id='room-dropdown' placeholder="Room Name" />
         <button id='submit-room' onclick='submitRoom()'>Submit room</button>
         <br>
         <br>
@@ -38,11 +47,11 @@
             <form id='chat-form' action='chat' method='POST'>
                 <label for='messageAuthor'>Enter your name:</label>
                 <br>
-                <input autocomplete="off" id='messageAuthor' type='text' author='author'>
+                <input autocomplete="off" id='messageAuthor' type='text' author='author' placeholder="Name" />
                 <br>
                 <label for='messageBody'>Enter message:</label>
                 <br>
-                <input autocomplete="off" id='messageBody' type='text' author='body'>
+                <input autocomplete="off" id='messageBody' type='text' author='body' placeholder="Message" />
                 <input id='submit-button' type='submit'>
             </form>
         </div>
@@ -61,6 +70,9 @@
         let chatForm = document.getElementById('chat-form')
         let chatLog = document.getElementById('chat-log')
         let showMessageButton = document.getElementById('showRoomMessages')
+        let authorSearchButton = document.getElementById('author-search-button')
+        let bodySearchButton = document.getElementById('body-search-button')
+        let messagesSinceButton = document.getElementById('time-search-button')
         let roomDropdown = 'general'
         let body = document.querySelector('body')
         let roomList = document.getElementById('room-list')
@@ -80,9 +92,7 @@
                 method: 'GET'
             }).then(response => response.json())
                 .then(rooms => {
-                    console.log(rooms)
                     if (rooms.length > 1) {
-                        console.log("rooms 1: " + rooms)
                         let roomList = []
                         for (let room of rooms) {
                             room = `<a onclick='submitRoom("${room}")'><div class='class-room-list'>` + room + "</div></a>"
@@ -92,12 +102,10 @@
                         theRooms.innerHTML += roomList.join('');
 
                     } else if (rooms.length != 0) { // if theres only 1 room name
-                        console.log("rooms 2: " + rooms)
                         rooms[0] = `<a onclick='submitRoom("${rooms[0]}")'><div class='class-room-list'>` + rooms[0] + "</div></a>"
                         theRooms.innerHTML = ''
                         theRooms.innerHTML += rooms.join('');
                     } else {
-                        console.log("rooms 3: " + rooms)
                     }
                 })
         }
@@ -105,25 +113,20 @@
         function submitRoom(roomName) {
             roomDropdown = document.getElementById('room-dropdown').value
             if (roomName) {
-                console.log("room name: "+roomName)
                 roomDropdown = roomName
             }
             if (roomDropdown.includes(' ')) {
                 roomDropdown = roomDropdown.split(' ').join('')
             }
-            console.log("got here 1")
             if (roomDropdown != '') {
-                console.log("got here 2")
                 let regex = /^[a-z]+$/
                 if (regex.test(roomDropdown)) {
-                    console.log("got here 3")
                     document.getElementById('room-name').textContent = 'Room name: ' + roomDropdown
 
                     fetch(`/postRoom/${roomDropdown}`, {
                         method: 'POST'
                     }).then(response => response.json())
                         .then(messages => {
-                            console.log("post room 4: " + messages)
                             chatLog.innerHTML += messages.map(message => message.body).reverse().join('')
                         })
                     populateRoomList()
@@ -182,7 +185,7 @@
         })
 
         showMessageButton.addEventListener('click', (event) => {
-            console.log('show messages!')
+            console.log('show all messages!')
             document.getElementById('messageBody').value = ''
             if (roomDropdown === '') {
                 chatPath = '/chat'
@@ -225,6 +228,155 @@
                     chatLog.innerHTML = flattenDeep(allMessagesArray).reverse().join('')
                 })
 
+        })
+
+        authorSearchButton.addEventListener('click', (event) => {
+            console.log('show messages with author!')
+            let authorValue = document.getElementById("author-name-search").value
+            // document.getElementById('author-name-search').value = ''
+            if (roomDropdown === '') {
+                chatPath = '/chat'
+            } else {
+                chatPath = '/chat' + "/" + roomDropdown
+            }
+            if (authorValue) {
+                chatPath = chatPath + "?author=" + authorValue
+                // console.log(chatPath)
+
+                function flattenDeep(arr1) {
+                    return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
+                }
+
+                fetch(chatPath, {
+                    method: 'GET',
+
+                }).then(response => response.json())
+                    .then(messages => {
+                        allMessagesArray = messages.map((message) => {
+                            // console.log(message);
+                            if (message.body) {
+                                return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
+                            } else if (message.length > 0) {
+                                messageArray = []
+                                if (message.length > 1) {
+                                    for (let theMessage of message) {
+                                        theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author + " <u>At:</u> " + new Date(theMessage.when) + " <u>Room:</u> " + theMessage.room + "<br><u>Body:</u> " + theMessage.body + "</div>";
+                                        messageArray.push(theMessage)
+                                    }
+                                } else {
+                                    theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> " + new Date(message[0].when) + " <u>Room:</u> " + message[0].room + "<br><u>Body:</u> " + message[0].body + "</div>";
+                                    messageArray.push(theMessage)
+                                }
+                                return messageArray
+
+                            }
+                        })
+                        allMessagesArray = allMessagesArray.filter(function (element) {
+                            return element !== undefined;
+                        });
+                        chatLog.innerHTML = flattenDeep(allMessagesArray).reverse().join('')
+                    })
+            }
+
+        })
+
+        bodySearchButton.addEventListener('click', (event) => {
+            console.log('show messages including text!')
+            let bodyValue = document.getElementById("body-search").value
+            // document.getElementById('messageBody').value = ''
+            if (roomDropdown === '') {
+                chatPath = '/chat'
+            } else {
+                chatPath = '/chat' + "/" + roomDropdown
+            }
+            if (bodyValue) {
+                chatPath = chatPath + "?body=" + bodyValue
+                // console.log(chatPath)
+
+                function flattenDeep(arr1) {
+                    return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
+                }
+
+                fetch(chatPath, {
+                    method: 'GET',
+
+                }).then(response => response.json())
+                    .then(messages => {
+                        allMessagesArray = messages.map((message) => {
+                            // console.log(message);
+                            if (message.body) {
+                                return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
+                            } else if (message.length > 0) {
+                                messageArray = []
+                                if (message.length > 1) {
+                                    for (let theMessage of message) {
+                                        theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author + " <u>At:</u> " + new Date(theMessage.when) + " <u>Room:</u> " + theMessage.room + "<br><u>Body:</u> " + theMessage.body + "</div>";
+                                        messageArray.push(theMessage)
+                                    }
+                                } else {
+                                    theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> " + new Date(message[0].when) + " <u>Room:</u> " + message[0].room + "<br><u>Body:</u> " + message[0].body + "</div>";
+                                    messageArray.push(theMessage)
+                                }
+                                return messageArray
+
+                            }
+                        })
+                        allMessagesArray = allMessagesArray.filter(function (element) {
+                            return element !== undefined;
+                        });
+                        chatLog.innerHTML = flattenDeep(allMessagesArray).reverse().join('')
+                    })
+            }
+
+        })
+
+        messagesSinceButton.addEventListener('click', (event) => {
+            console.log('show messages since!')
+            let messagesSinceValue = document.getElementById("time-search").value
+            // document.getElementById('messageBody').value = ''
+            if (roomDropdown === '') {
+                chatPath = '/chat'
+            } else {
+                chatPath = '/chat' + "/" + roomDropdown
+            }
+            if (messagesSinceValue) {
+                chatPath = chatPath + "?since=" + messagesSinceValue
+                // console.log(chatPath)
+
+                function flattenDeep(arr1) {
+                    return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
+                }
+
+                fetch(chatPath, {
+                    method: 'GET',
+
+                }).then(response => response.json())
+                    .then(messages => {
+                        allMessagesArray = messages.map((message) => {
+                            // console.log(message);
+                            if (message.body) {
+                                return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
+                            } else if (message.length > 0) {
+                                messageArray = []
+                                if (message.length > 1) {
+                                    for (let theMessage of message) {
+                                        theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author + " <u>At:</u> " + new Date(theMessage.when) + " <u>Room:</u> " + theMessage.room + "<br><u>Body:</u> " + theMessage.body + "</div>";
+                                        messageArray.push(theMessage)
+                                    }
+                                } else {
+                                    theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> " + new Date(message[0].when) + " <u>Room:</u> " + message[0].room + "<br><u>Body:</u> " + message[0].body + "</div>";
+                                    messageArray.push(theMessage)
+                                }
+                                return messageArray
+
+                            }
+                        })
+                        allMessagesArray = allMessagesArray.filter(function (element) {
+                            return element !== undefined;
+                        });
+                        chatLog.innerHTML = flattenDeep(allMessagesArray).reverse().join('')
+                    })
+            }
         })
 
     </script>
