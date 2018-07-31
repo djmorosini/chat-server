@@ -22,9 +22,13 @@ h2 {
 }
 #room-messages-title {
     color: blue;
-    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 0;
+    padding: 5px;
+    width: fit-content;
+    /* position: absolute;
     margin-left: 10px;
-    z-index: 1;
+    z-index: 1; */
 }
 #room-list {
     position: absolute;
@@ -37,10 +41,12 @@ h2 {
     display: inline-block;
     color: white;
 }
+
 #show-rooms:hover + #room-list {
     display: inline-block;
     color: white;
 }
+
 #show-rooms {
     width: 110px;
     padding: 5px;
@@ -57,15 +63,15 @@ h2 {
 }
 #chat-log {
     background-color: rgba(0, 0, 0, 0.5);
-    width: 80%;
+    width: 100%;
     height: 200px;
     overflow: auto;
     scroll-snap-type: mandatory;
     font-family: 'Merienda', cursive;
-    padding-top: 30px;
+    /* padding-top: 30px;
     position: relative;
     top: 20px;
-    z-index: 0;
+    z-index: 0; */
     /* background-image: url("images/webBackground.jpg");
     background-image: url("images/lightsBackground.jpg"); */
 }
@@ -128,10 +134,18 @@ button {
     width: fit-content;
     padding: 0px 5px 0 5px;
     margin-top: 5px;
- }
- #form-input {
-     padding-bottom: 5px;
- }
+}
+#form-input {
+    padding-bottom: 5px;
+}
+.class-room-list {
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+.class-room-list:hover {
+    text-decoration: underline;
+    color: red;
+}
 @media only screen and (max-device-width: 480px){
     body {
         font-size: 40px;
@@ -165,17 +179,16 @@ button {
     }
     #chat-log {
         width: 100%;
-        font-size: 14px;
-        height: 400px;
-        position: relative;
+        height: 600px;
+        /* position: relative;
         top: 60px;
-        padding-top: 60px;
+        padding-top: 60px; */
     }
     #drop-title {
         font-size: 42px;
     }
     .message-class {
         margin: 10px;
-        font-size: 88%;
+        font-size: 16pt;
     }
 }

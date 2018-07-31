@@ -74,34 +74,57 @@
         }
 
         function populateRoomList() {
-            theRooms.innerHTML = ''
+            // theRooms.innerHTML = ''
+            console.log("called populate list")
             fetch('/rooms', {
-                method: 'GET',
-
+                method: 'GET'
             }).then(response => response.json())
                 .then(rooms => {
-                    // console.log(rooms)
-                    theRooms.innerHTML += rooms.join('<br>');
+                    console.log(rooms)
+                    if (rooms.length > 1) {
+                        console.log("rooms 1: " + rooms)
+                        let roomList = []
+                        for (let room of rooms) {
+                            room = `<a onclick='submitRoom("${room}")'><div class='class-room-list'>` + room + "</div></a>"
+                            roomList.push(room)
+                        }
+                        theRooms.innerHTML = ''
+                        theRooms.innerHTML += roomList.join('');
+
+                    } else if (rooms.length != 0) { // if theres only 1 room name
+                        console.log("rooms 2: " + rooms)
+                        rooms[0] = `<a onclick='submitRoom("${rooms[0]}")'><div class='class-room-list'>` + rooms[0] + "</div></a>"
+                        theRooms.innerHTML = ''
+                        theRooms.innerHTML += rooms.join('');
+                    } else {
+                        console.log("rooms 3: " + rooms)
+                    }
                 })
         }
 
-        function submitRoom() {
+        function submitRoom(roomName) {
             roomDropdown = document.getElementById('room-dropdown').value
+            if (roomName) {
+                console.log("room name: "+roomName)
+                roomDropdown = roomName
+            }
             if (roomDropdown.includes(' ')) {
                 roomDropdown = roomDropdown.split(' ').join('')
-                // console.log(roomDropdown)
             }
+            console.log("got here 1")
             if (roomDropdown != '') {
+                console.log("got here 2")
                 let regex = /^[a-z]+$/
                 if (regex.test(roomDropdown)) {
+                    console.log("got here 3")
                     document.getElementById('room-name').textContent = 'Room name: ' + roomDropdown
 
                     fetch(`/postRoom/${roomDropdown}`, {
-                        method: 'POST',
+                        method: 'POST'
                     }).then(response => response.json())
                         .then(messages => {
-                            // console.log("post room" + messages)
-                            chatLog.innerHTML = messages.map(message => message.body).join('')
+                            console.log("post room 4: " + messages)
+                            chatLog.innerHTML += messages.map(message => message.body).reverse().join('')
                         })
                     populateRoomList()
 
@@ -115,12 +138,11 @@
             chatLog.innerHTML = ''
             if (roomDropdown === '') {
                 document.getElementById('room-name').textContent = 'Room name: all'
-                body.style = 'background-color: lightblue; color: white; background-image: url("images/lightsBackground.jpg"); background-size: 100%; background-repeat: no-repeat;'
+                body.style = 'background-color: lightblue; color: white; background-image: url("images/lightsBackground.jpg"); background-position: center; background-size: 100%; background-repeat: no-repeat;'
             } else if (roomDropdown === 'dogs') {
                 body.style = 'background-color: black; color: white; background-image: url("images/dallasField.jpg"); background-size: 100%; background-position: center; background-repeat:no-repeat;'
-                // chatLog.style = 'background-color: rgba(255, 255, 255, 0.5);'
             } else if (roomDropdown === 'groot') {
-                body.style = 'background-image: url("images/grootExplosion.jpg"), url("images/happyGroot.jpg"); background-position: bottom right, top right; background-size: 600px, 600px; background-repeat:no-repeat;'
+                body.style = 'background-color: green; background-image: url("images/grootExplosion.jpg"), url("images/happyGroot.jpg"); background-position: bottom right, top right; background-size: 600px, 600px; background-repeat:no-repeat;'
             } else if (roomDropdown === 'general') {
                 body.style = 'background-color: gray; color: white; background-image: url("images/webBackground.jpg"); background-position: bottom left; background-repeat: no-repeat;'
             } else {
@@ -153,7 +175,7 @@
             }).then(response => response.json())
                 .then(messages => {
                     // console.log(messages)
-                    chatLog.innerHTML = messages.map(message => "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + message.when + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>").join('')
+                    chatLog.innerHTML = messages.map(message => "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>").reverse().join('')
                     populateRoomList()
                 })
             event.preventDefault();
@@ -181,16 +203,16 @@
                     allMessagesArray = messages.map((message) => {
                         // console.log(message);
                         if (message.body) {
-                            return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + message.when + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
+                            return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
                         } else if (message.length > 0) {
                             messageArray = []
                             if (message.length > 1) {
                                 for (let theMessage of message) {
-                                    theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author + " <u>At:</u> " + theMessage.when + " <u>Room:</u> " + theMessage.room + "<br><u>Body:</u> " + theMessage.body + "</div>";
+                                    theMessage = "<div class='message-class'><u>By:</u> " + theMessage.author + " <u>At:</u> " + new Date(theMessage.when) + " <u>Room:</u> " + theMessage.room + "<br><u>Body:</u> " + theMessage.body + "</div>";
                                     messageArray.push(theMessage)
                                 }
                             } else {
-                                theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> " + message[0].when + " <u>Room:</u> " + message[0].room + "<br><u>Body:</u> " + message[0].body + "</div>";
+                                theMessage = "<div class='message-class'><u>By:</u> " + message[0].author + " <u>At:</u> " + new Date(message[0].when) + " <u>Room:</u> " + message[0].room + "<br><u>Body:</u> " + message[0].body + "</div>";
                                 messageArray.push(theMessage)
                             }
                             return messageArray
@@ -200,7 +222,7 @@
                     allMessagesArray = allMessagesArray.filter(function (element) {
                         return element !== undefined;
                     });
-                    chatLog.innerHTML = flattenDeep(allMessagesArray).join('')
+                    chatLog.innerHTML = flattenDeep(allMessagesArray).reverse().join('')
                 })
 
         })
