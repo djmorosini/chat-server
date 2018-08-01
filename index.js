@@ -21,7 +21,6 @@ function handleRequest(request, response) {
 
   if (request.url.includes('?')) {
     extraRequest = request.url.split('?')[1]
-    console.log(extraRequest.split("="))
     let keyValues = extraRequest.split("=");
     [identifier, value] = keyValues;
   }
@@ -72,9 +71,7 @@ function handleRequest(request, response) {
           for (let roomId of allRooms) {
             theRoom = house.roomWithId(roomId)
             allMessages = theRoom.messagesSince(0)
-            console.log(allMessages)
             for (let message of allMessages) {
-              console.log(message)
               if (message.author === value) {
                 roomMessages.push(message)
               }
@@ -111,7 +108,6 @@ function handleRequest(request, response) {
             when: new Date().toISOString(),
             room: roomId
           }
-          console.log(message)
           house.sendMessageToRoom(roomId, message);
           let room = house.roomWithId(roomId)
           let messages = room.messagesSince(0)

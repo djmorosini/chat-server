@@ -172,7 +172,6 @@
             if (roomInput.includes(' ')) {
                 roomInput = roomInput.split(' ').join('')
             }
-            console.log(roomInput)
             if (roomInput != '') {
                 let regex = /^[a-z]+$/
                 if (regex.test(roomInput)) {
@@ -346,7 +345,6 @@
             }
             if (bodyValue) {
                 chatPath = chatPath + "?body=" + bodyValue
-                console.log(chatPath)
 
                 function flattenDeep(arr1) {
                     return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
@@ -358,7 +356,6 @@
                 }).then(response => response.json())
                     .then(messages => {
                         allMessagesArray = messages.map((message) => {
-                            console.log(message);
                             if (message.body) {
                                 return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
                             } else if (message.length > 0) {
