@@ -34,12 +34,12 @@
         <button id='time-search-button'>Find messages since</button>
         <br>
         <br>
-        <label for='room-dropdown'>Enter name of room to join:
+        <label for='room-name-input'>Enter name of room to join:
             <br>
             <span id='room-require'>[Must be only lowercase letters.]</span>
         </label>
         <br>
-        <input type='text' id='room-dropdown' placeholder="Room Name" />
+        <input type='text' id='room-name-input' placeholder="Room Name" />
         <button id='submit-room' onclick='submitRoom()'>Submit room</button>
         <br>
         <br>
@@ -73,7 +73,7 @@
         let authorSearchButton = document.getElementById('author-search-button')
         let bodySearchButton = document.getElementById('body-search-button')
         let messagesSinceButton = document.getElementById('time-search-button')
-        let roomDropdown = 'general'
+        let roomInput = 'general'
         let body = document.querySelector('body')
         let roomList = document.getElementById('room-list')
         let theRooms = document.getElementById('the-rooms')
@@ -92,10 +92,10 @@
 
         function showAllMessages() {
             console.log("show all function")
-            if (roomDropdown === '') {
+            if (roomInput === '') {
                 chatPath = '/chat'
             } else {
-                chatPath = '/chat' + "/" + roomDropdown
+                chatPath = '/chat' + "/" + roomInput
             }
             // console.log(chatPath)
 
@@ -165,19 +165,19 @@
         }
 
         function submitRoom(roomName) {
-            roomDropdown = document.getElementById('room-dropdown').value
+            roomInput = document.getElementById('room-name-input').value
             if (roomName) {
-                roomDropdown = roomName
+                roomInput = roomName
             }
-            if (roomDropdown.includes(' ')) {
-                roomDropdown = roomDropdown.split(' ').join('')
+            if (roomInput.includes(' ')) {
+                roomInput = roomInput.split(' ').join('')
             }
-            if (roomDropdown != '') {
+            if (roomInput != '') {
                 let regex = /^[a-z]+$/
-                if (regex.test(roomDropdown)) {
-                    document.getElementById('room-name').textContent = 'Room name: ' + roomDropdown
+                if (regex.test(roomInput)) {
+                    document.getElementById('room-name').textContent = 'Room name: ' + roomInput
 
-                    fetch(`/postRoom/${roomDropdown}`, {
+                    fetch(`/postRoom/${roomInput}`, {
                         method: 'POST'
                     }).then(response => response.json())
                         .then(messages => {
@@ -188,19 +188,19 @@
                 } else {
                     let alert = document.getElementById('invalid-alert')
                     alert.style = "display: inline-block;"
-                    roomDropdown = 'general'
+                    roomInput = 'general'
                 }
             }
-            document.getElementById('room-dropdown').value = ''
+            document.getElementById('room-name-input').value = ''
             chatLog.innerHTML = ''
-            if (roomDropdown === '') {
+            if (roomInput === '') {
                 document.getElementById('room-name').textContent = 'Room name: all'
                 body.style = 'background-color: lightblue; color: white; background-image: url("images/lightsBackground.jpg"); background-position: center; background-size: 100%; background-repeat: no-repeat;'
-            } else if (roomDropdown === 'dogs') {
+            } else if (roomInput === 'dogs') {
                 body.style = 'background-color: black; color: white; background-image: url("images/dallasField.jpg"); background-size: 100%; background-position: center; background-repeat:no-repeat;'
-            } else if (roomDropdown === 'groot') {
+            } else if (roomInput === 'groot') {
                 body.style = 'background-color: green; background-image: url("images/grootExplosion.jpg"), url("images/happyGroot.jpg"); background-position: bottom right, top right; background-size: 600px, 600px; background-repeat:no-repeat;'
-            } else if (roomDropdown === 'general') {
+            } else if (roomInput === 'general') {
                 body.style = 'background-color: gray; color: white; background-image: url("images/webBackground.jpg"); background-position: bottom left; background-repeat: no-repeat;'
             } else {
                 body.style = 'background-color: gray; color: white;'
@@ -219,10 +219,10 @@
             params.append('body', message);
             document.getElementById('messageBody').value = ''
 
-            if (roomDropdown === '' || roomDropdown === 'general') {
+            if (roomInput === '' || roomInput === 'general') {
                 chatPath = '/chat'
             } else {
-                chatPath = '/chat' + "/" + roomDropdown
+                chatPath = '/chat' + "/" + roomInput
             }
 
             fetch(chatPath, {
@@ -241,10 +241,10 @@
         showMessageButton.addEventListener('click', (event) => {
             console.log('show all messages!')
             document.getElementById('messageBody').value = ''
-            if (roomDropdown === '') {
+            if (roomInput === '') {
                 chatPath = '/chat'
             } else {
-                chatPath = '/chat' + "/" + roomDropdown
+                chatPath = '/chat' + "/" + roomInput
             }
             // console.log(chatPath)
 
@@ -288,10 +288,10 @@
             console.log('show messages with author!')
             let authorValue = document.getElementById("author-name-search").value
             // document.getElementById('author-name-search').value = ''
-            if (roomDropdown === '') {
+            if (roomInput === '') {
                 chatPath = '/chat'
             } else {
-                chatPath = '/chat' + "/" + roomDropdown
+                chatPath = '/chat' + "/" + roomInput
             }
             if (authorValue) {
                 chatPath = chatPath + "?author=" + authorValue
@@ -338,10 +338,10 @@
             console.log('show messages including text!')
             let bodyValue = document.getElementById("body-search").value
             // document.getElementById('messageBody').value = ''
-            if (roomDropdown === '') {
+            if (roomInput === '') {
                 chatPath = '/chat'
             } else {
-                chatPath = '/chat' + "/" + roomDropdown
+                chatPath = '/chat' + "/" + roomInput
             }
             if (bodyValue) {
                 chatPath = chatPath + "?body=" + bodyValue
@@ -388,10 +388,10 @@
             console.log('show messages since!')
             let messagesSinceValue = new Date(document.getElementById("time-search").value).toISOString()
             // document.getElementById('messageBody').value = ''
-            if (roomDropdown === '') {
+            if (roomInput === '') {
                 chatPath = '/chat'
             } else {
-                chatPath = '/chat' + "/" + roomDropdown
+                chatPath = '/chat' + "/" + roomInput
             }
             if (messagesSinceValue) {
                 chatPath = chatPath + "?since=" + messagesSinceValue

@@ -96,7 +96,7 @@ button {
     border: 1px solid black;
     padding: 5px;
 }
-#room-dropdown {
+#room-name-input {
     font-family: 'Merienda', cursive;
     background-color: black;
     border: 1px solid white;
@@ -209,7 +209,7 @@ button {
         width: 300px;
         font-size: 30px;
     }
-    #room-dropdown {
+    #room-name-input {
         height: 60px;
         width: 300px;
         font-size: 30px;
@@ -224,5 +224,9 @@ button {
     .message-class {
         margin: 10px;
         font-size: 16pt;
+    }
+    #room-messages-title {
+        width: 45%;
+
     }
 }
