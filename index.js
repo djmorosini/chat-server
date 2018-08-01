@@ -135,7 +135,7 @@ function handleRequest(request, response) {
         } else if (extraRequest && identifier === 'body') {
           let allMessages = room.messagesSince(0)
           for (let message of allMessages) {
-            if (message.body === value) {
+            if (message.body.includes(`${value}`)) {
               roomMessages.push(message)
             }
           }
