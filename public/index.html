@@ -47,11 +47,11 @@
             <form id='chat-form' action='chat' method='POST'>
                 <label for='messageAuthor'>Enter your name:</label>
                 <br>
-                <input autocomplete="off" id='messageAuthor' type='text' author='author' placeholder="Name" />
+                <input autocomplete="off" id='messageAuthor' type='text' name='author' placeholder="Name" />
                 <br>
                 <label for='messageBody'>Enter message:</label>
                 <br>
-                <input autocomplete="off" id='messageBody' type='text' author='body' placeholder="Message" />
+                <input autocomplete="off" id='messageBody' type='text' name='body' placeholder="Message" />
                 <input id='submit-button' type='submit'>
             </form>
         </div>
@@ -211,8 +211,8 @@
 
         }
         chatForm.addEventListener('submit', (event) => {
-            let inputElement = chatForm.querySelector('input[author=body]')
-            let authorElement = chatForm.querySelector('input[author=author]')
+            let inputElement = chatForm.querySelector('input[name=body]')
+            let authorElement = chatForm.querySelector('input[name=author]')
             let author = authorElement.value
             let message = inputElement.value;
             let params = new URLSearchParams();
