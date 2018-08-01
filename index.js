@@ -111,6 +111,7 @@ function handleRequest(request, response) {
             when: new Date().toISOString(),
             room: roomId
           }
+          console.log(message)
           house.sendMessageToRoom(roomId, message);
           let room = house.roomWithId(roomId)
           let messages = room.messagesSince(0)
@@ -152,7 +153,9 @@ function handleRequest(request, response) {
       sendResponse(allTheRooms)
 
     } else if (path === `/postRoom/${roomId}`) {
-      house.roomWithId(roomId)
+      room = house.roomWithId(roomId)
+      roomMessages = room.messagesSince(0)
+      sendResponse(roomMessages)
     } else {
       let fileName = request.url.slice(1)
       assistant.sendFile(fileName)

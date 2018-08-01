@@ -172,6 +172,7 @@
             if (roomInput.includes(' ')) {
                 roomInput = roomInput.split(' ').join('')
             }
+            console.log(roomInput)
             if (roomInput != '') {
                 let regex = /^[a-z]+$/
                 if (regex.test(roomInput)) {
@@ -181,7 +182,7 @@
                         method: 'POST'
                     }).then(response => response.json())
                         .then(messages => {
-                            chatLog.innerHTML += messages.map(message => message.body).reverse().join('')
+                            chatLog.innerHTML += messages.map(message => "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>").reverse().join('')
                         })
                     populateRoomList()
 
