@@ -2,11 +2,19 @@ const http = require('http');
 const mime = require('mime-types');
 const Assistant = require('./lib/assistant');
 const House = require('./lib/house')
+const MongoClient = require('mongodb').MongoClient;
+const MongoURL = process.env.MONGO_CONNECTION || 'mongodb://localhost:27017'
 const port = process.env.PORT || 5000;
+
+const assert = require('assert');
+
+const dbName = 'my_chat_server'
+
 let house = new House()
 
 http.createServer(handleRequest).listen(port)
 console.log("Listening on port: " + port);
+console.log("MONGO URL IS: " + MongoURL);
 
 function handleRequest(request, response) {
   console.log('request.url = ' + request.url)
@@ -50,12 +58,30 @@ function handleRequest(request, response) {
             room: roomId
           }
           house.sendMessageToRoom(roomId, message);
+          saveMessage(message)
           let room = house.roomWithId(roomId)
           let messages = room.messagesSince(0)
 
           sendResponse(messages)
         })
       } else {
+
+        // const findDocuments = function(db, callback) {
+        //   // Get the documents collection
+        //   const collection = db.collection('documents');
+        //   // Find some documents
+        //   collection.find({}).toArray(function(err, docs) {
+        //     assert.equal(err, null);
+        //     console.log("Found the following records");
+        //     console.log(docs)
+        //     callback(docs);
+        //   });
+        // }
+
+
+        allRoomMessages = printAllMessages()
+
+        console.log(allRoomMessages)
 
         let allRooms = house.allRoomIds()
         let roomMessages = []
@@ -109,6 +135,9 @@ function handleRequest(request, response) {
             room: roomId
           }
           house.sendMessageToRoom(roomId, message);
+
+          saveMessage(message)
+
           let room = house.roomWithId(roomId)
           let messages = room.messagesSince(0)
           sendResponse(messages)
@@ -159,4 +188,53 @@ function handleRequest(request, response) {
   } catch (error) {
     assistant.sendError(404, "Error: " + error.toString())
   }
+}
+function connectAnd(callback) {
+  console.log("mongo url: "+MongoURL)
+  MongoClient.connect(MongoURL, { useNewUrlParser: true }, function (err, client) {
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
+
+    const db = client.db(dbName);
+    const collection = db.collection('messages');
+
+    callback(db, collection, () => {
+      client.close();
+    });
+  });
+}
+
+function printMessage(message, currentDay) {
+  let when = message.when
+  if (!currentDay) {
+    currentDay = when;
+  }
+  console.log(currentDay);
+  return currentDay;
+}
+// roomID = params[room_id]
+// printAllMessages({room: roomID})
+
+function printAllMessages(query = {}) {
+  connectAnd((db, collection, finishUp) => {
+    let cursor = collection.find(query).sort([['when', -1]]);
+    let currentDay;
+    cursor.forEach((message) => {
+      currentDay = printMessage(message, currentDay);
+    }, function (err) {
+      assert.equal(null, err);
+      finishUp();
+    });
+  });
+}
+
+function saveMessage(message) {
+  connectAnd((db, collection, finishUp) => {
+    collection.insertOne(message, (err, r) => {
+      assert.equal(null, err);
+      assert.equal(1, r.insertedCount);
+      console.log("saved message: " + message)
+      finishUp();
+    });
+  });
 }
