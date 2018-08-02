@@ -116,11 +116,11 @@ function handleRequest(request, response) {
           }
           sendResponse(roomMessages)
         } else {
-          // for (let roomId of allRooms) {
-          //   theRoom = house.roomWithId(roomId)
-          //   roomMessages.push(theRoom.messages)
-          // }
-          sendResponse(databaseAllMessages)
+          for (let roomId of allRooms) {
+            theRoom = house.roomWithId(roomId)
+            roomMessages.push(theRoom.messages)
+          }
+          sendResponse(roomMessages)
         }
       }
     } else if (path === `/chat/${roomId}`) {
@@ -171,8 +171,8 @@ function handleRequest(request, response) {
           }
           sendResponse(roomMessages)
         } else {
-          // let messages = room.messagesSince(0)
-          sendResponse(databaseRoomMessages)
+          let messages = room.messagesSince(0)
+          sendResponse(messages)
         }
 
       }
