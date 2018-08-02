@@ -78,11 +78,6 @@ function handleRequest(request, response) {
         //   });
         // }
 
-
-        databaseAllMessages = printAllMessages()
-
-        console.log(databaseAllMessages)
-
         let allRooms = house.allRoomIds()
         let roomMessages = []
 
@@ -116,11 +111,18 @@ function handleRequest(request, response) {
           }
           sendResponse(roomMessages)
         } else {
-          for (let roomId of allRooms) {
-            theRoom = house.roomWithId(roomId)
-            roomMessages.push(theRoom.messages)
-          }
-          sendResponse(roomMessages)
+          // for (let roomId of allRooms) {
+          //   theRoom = house.roomWithId(roomId)
+          //   roomMessages.push(theRoom.messages)
+          // }
+          // console.log(roomMessages)
+          // sendResponse(roomMessages)
+          printAllMessages({}, (messages) => {
+
+            // return messages
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         }
       }
     } else if (path === `/chat/${roomId}`) {
@@ -143,10 +145,6 @@ function handleRequest(request, response) {
           sendResponse(messages)
         })
       } else {
-
-        databaseRoomMessages = printAllMessages({room: roomId})
-
-        console.log(databaseRoomMessages)
 
         let room = house.roomWithId(roomId)
         let roomMessages = []
@@ -171,8 +169,15 @@ function handleRequest(request, response) {
           }
           sendResponse(roomMessages)
         } else {
-          let messages = room.messagesSince(0)
-          sendResponse(messages)
+          // let messages = room.messagesSince(0)
+          // sendResponse(messages)
+
+          printAllMessages({ room: `${roomId}` }, (messages) => {
+
+            // return messages
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         }
 
       }
@@ -193,8 +198,11 @@ function handleRequest(request, response) {
     assistant.sendError(404, "Error: " + error.toString())
   }
 }
+
+
+
 function connectAnd(callback) {
-  console.log("mongo url: "+MongoURL)
+  console.log("mongo url: " + MongoURL)
   MongoClient.connect(MongoURL, { useNewUrlParser: true }, function (err, client) {
     assert.equal(null, err);
     console.log("Connected successfully to server");
@@ -208,28 +216,34 @@ function connectAnd(callback) {
   });
 }
 
-function printMessage(message, currentDay) {
-  let when = message.when
-  if (!currentDay) {
-    currentDay = when;
-  }
-  console.log(currentDay);
-  return currentDay;
-}
+// function printMessage(message) {
+// let when = message.when
+// if (!currentDay) {
+//   currentDay = when;
+// }
+//   return message;
+// }
 // roomID = params[room_id]
 // printAllMessages({room: roomId})
 
-function printAllMessages(query = {}) {
+function printAllMessages(query = {}, callback) {
+
   connectAnd((db, collection, finishUp) => {
-    let cursor = collection.find(query).sort([['when', -1]]);
-    let currentDay;
+    let cursor = collection.find(query).sort([['when', 1]]);
+
+    messages = []
+
     cursor.forEach((message) => {
-      currentDay = printMessage(message, currentDay);
+      // theMessage = printMessage(message);
+
+      messages.push(message)
     }, function (err) {
       assert.equal(null, err);
       finishUp();
+      callback(messages)
     });
   });
+
 }
 
 function saveMessage(message) {
