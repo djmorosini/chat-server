@@ -79,9 +79,9 @@ function handleRequest(request, response) {
         // }
 
 
-        allRoomMessages = printAllMessages()
+        databaseAllMessages = printAllMessages()
 
-        console.log(allRoomMessages)
+        console.log(databaseAllMessages)
 
         let allRooms = house.allRoomIds()
         let roomMessages = []
@@ -116,11 +116,11 @@ function handleRequest(request, response) {
           }
           sendResponse(roomMessages)
         } else {
-          for (let roomId of allRooms) {
-            theRoom = house.roomWithId(roomId)
-            roomMessages.push(theRoom.messages)
-          }
-          sendResponse(roomMessages)
+          // for (let roomId of allRooms) {
+          //   theRoom = house.roomWithId(roomId)
+          //   roomMessages.push(theRoom.messages)
+          // }
+          sendResponse(databaseAllMessages)
         }
       }
     } else if (path === `/chat/${roomId}`) {
@@ -143,6 +143,10 @@ function handleRequest(request, response) {
           sendResponse(messages)
         })
       } else {
+
+        databaseRoomMessages = printAllMessages({room: roomId})
+
+        console.log(databaseRoomMessages)
 
         let room = house.roomWithId(roomId)
         let roomMessages = []
@@ -167,8 +171,8 @@ function handleRequest(request, response) {
           }
           sendResponse(roomMessages)
         } else {
-          let messages = room.messagesSince(0)
-          sendResponse(messages)
+          // let messages = room.messagesSince(0)
+          sendResponse(databaseRoomMessages)
         }
 
       }
@@ -213,7 +217,7 @@ function printMessage(message, currentDay) {
   return currentDay;
 }
 // roomID = params[room_id]
-// printAllMessages({room: roomID})
+// printAllMessages({room: roomId})
 
 function printAllMessages(query = {}) {
   connectAnd((db, collection, finishUp) => {
