@@ -63,7 +63,9 @@ function handleRequest(request, response) {
           let roomMessages = []
           printAllMessages({ room: `${roomId}` }, (messages) => {
 
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         })
@@ -93,7 +95,9 @@ function handleRequest(request, response) {
         } else {
           printAllMessages({}, (messages) => {
 
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         }
@@ -117,7 +121,9 @@ function handleRequest(request, response) {
           let roomMessages = []
           printAllMessages({ room: `${roomId}` }, (messages) => {
 
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         })
@@ -150,7 +156,9 @@ function handleRequest(request, response) {
         } else {
 
           printAllMessages({ room: `${roomId}` }, (messages) => {
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         }
