@@ -76,20 +76,27 @@ function handleRequest(request, response) {
 
           printAllMessages({ when: { $gt: value } }, (messages) => {
 
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
 
         } else if (extraRequest && identifier === 'author') {
           printAllMessages({ author: value }, (messages) => {
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         } else if (extraRequest && identifier === 'body') {
+          value = value.split('%20')
+          value.join()
+          printAllMessages({  body: new RegExp(value, 'i') }, (messages) => {
 
-          printAllMessages({ body: { $in: [value] } }, (messages) => {
-
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         } else {
@@ -136,21 +143,28 @@ function handleRequest(request, response) {
 
           printAllMessages({ when: { $gt: value } }, (messages) => {
 
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         } else if (extraRequest && identifier === 'author') {
 
           printAllMessages({ author: value }, (messages) => {
 
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         } else if (extraRequest && identifier === 'body') {
+          value = value.split('%20')
+          value.join()
+          printAllMessages({ body: new RegExp(value, 'i') }, (messages) => {
 
-          printAllMessages({ body: { $in: value } }, (messages) => {
-
-            roomMessages.push(messages)
+            for (let message of messages) {
+              roomMessages.push(message)
+            }
             sendResponse(roomMessages)
           })
         } else {
