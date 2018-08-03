@@ -292,6 +292,7 @@
         })
 
         authorSearchButton.addEventListener('click', (event) => {
+            endAutoRefresh()
             console.log('show messages with author!')
             let authorValue = document.getElementById("author-name-search").value
             // document.getElementById('author-name-search').value = ''
@@ -342,6 +343,7 @@
         })
 
         bodySearchButton.addEventListener('click', (event) => {
+            endAutoRefresh()
             console.log('show messages including text!')
             let bodyValue = document.getElementById("body-search").value
             // document.getElementById('messageBody').value = ''
@@ -390,6 +392,7 @@
         })
 
         messagesSinceButton.addEventListener('click', (event) => {
+            endAutoRefresh()
             console.log('show messages since!')
             let messagesSinceValue = new Date(document.getElementById("time-search").value).toISOString()
             // document.getElementById('messageBody').value = ''
