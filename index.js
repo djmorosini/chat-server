@@ -70,11 +70,16 @@ function handleRequest(request, response) {
           })
         })
       } else {
+
+        if (!roomId) {
+          roomId = 'general'
+        }
+
         let roomMessages = []
 
         if (extraRequest && identifier === 'since') {
 
-          printAllMessages({ when: { $gt: value } }, (messages) => {
+          printAllMessages({ when: { $gt: value }, room: roomId }, (messages) => {
 
             for (let message of messages) {
               roomMessages.push(message)
@@ -92,7 +97,7 @@ function handleRequest(request, response) {
         } else if (extraRequest && identifier === 'body') {
           value = value.split('%20')
           value.join()
-          printAllMessages({  body: new RegExp(value, 'i') }, (messages) => {
+          printAllMessages({ body: new RegExp(value, 'i'), room: roomId }, (messages) => {
 
             for (let message of messages) {
               roomMessages.push(message)
@@ -141,7 +146,7 @@ function handleRequest(request, response) {
 
         if (extraRequest && identifier === 'since') {
 
-          printAllMessages({ when: { $gt: value } }, (messages) => {
+          printAllMessages({ when: { $gt: value }, room: roomId }, (messages) => {
 
             for (let message of messages) {
               roomMessages.push(message)
@@ -150,7 +155,7 @@ function handleRequest(request, response) {
           })
         } else if (extraRequest && identifier === 'author') {
 
-          printAllMessages({ author: value }, (messages) => {
+          printAllMessages({ author: value, room: roomId }, (messages) => {
 
             for (let message of messages) {
               roomMessages.push(message)
@@ -160,7 +165,7 @@ function handleRequest(request, response) {
         } else if (extraRequest && identifier === 'body') {
           value = value.split('%20')
           value.join()
-          printAllMessages({ body: new RegExp(value, 'i') }, (messages) => {
+          printAllMessages({ body: new RegExp(value, 'i'), room: roomId }, (messages) => {
 
             for (let message of messages) {
               roomMessages.push(message)
