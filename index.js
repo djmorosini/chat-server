@@ -59,67 +59,40 @@ function handleRequest(request, response) {
           }
           house.sendMessageToRoom(roomId, message);
           saveMessage(message)
-          let room = house.roomWithId(roomId)
-          let messages = room.messagesSince(0)
 
-          sendResponse(messages)
+          let roomMessages = []
+          printAllMessages({ room: `${roomId}` }, (messages) => {
+
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         })
       } else {
-
-        // const findDocuments = function(db, callback) {
-        //   // Get the documents collection
-        //   const collection = db.collection('documents');
-        //   // Find some documents
-        //   collection.find({}).toArray(function(err, docs) {
-        //     assert.equal(err, null);
-        //     console.log("Found the following records");
-        //     console.log(docs)
-        //     callback(docs);
-        //   });
-        // }
-
-        let allRooms = house.allRoomIds()
         let roomMessages = []
 
         if (extraRequest && identifier === 'since') {
-          for (let roomId of allRooms) {
-            theRoom = house.roomWithId(roomId)
-            messagesSince = theRoom.messagesSince(value)
-            roomMessages.push(messagesSince)
-          }
-          sendResponse(roomMessages)
+
+          printAllMessages({ when: { $gt: value } }, (messages) => {
+
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
+
         } else if (extraRequest && identifier === 'author') {
-          for (let roomId of allRooms) {
-            theRoom = house.roomWithId(roomId)
-            allMessages = theRoom.messagesSince(0)
-            for (let message of allMessages) {
-              if (message.author === value) {
-                roomMessages.push(message)
-              }
-            }
-          }
-          sendResponse(roomMessages)
+          printAllMessages({ author: value }, (messages) => {
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         } else if (extraRequest && identifier === 'body') {
-          for (let roomId of allRooms) {
-            theRoom = house.roomWithId(roomId)
-            allMessages = theRoom.messagesSince(0)
-            for (let message of allMessages) {
-              if (message.body.includes(`${value}`)) {
-                roomMessages.push(message)
-              }
-            }
-          }
-          sendResponse(roomMessages)
+
+          printAllMessages({ body: { $in: value } }, (messages) => {
+
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         } else {
-          // for (let roomId of allRooms) {
-          //   theRoom = house.roomWithId(roomId)
-          //   roomMessages.push(theRoom.messages)
-          // }
-          // console.log(roomMessages)
-          // sendResponse(roomMessages)
           printAllMessages({}, (messages) => {
 
-            // return messages
             roomMessages.push(messages)
             sendResponse(roomMessages)
           })
@@ -141,8 +114,12 @@ function handleRequest(request, response) {
           saveMessage(message)
 
           let room = house.roomWithId(roomId)
-          let messages = room.messagesSince(0)
-          sendResponse(messages)
+          let roomMessages = []
+          printAllMessages({ room: `${roomId}` }, (messages) => {
+
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         })
       } else {
 
@@ -150,31 +127,29 @@ function handleRequest(request, response) {
         let roomMessages = []
 
         if (extraRequest && identifier === 'since') {
-          let messages = room.messagesSince(value)
-          sendResponse(messages)
+
+          printAllMessages({ when: { $gt: value } }, (messages) => {
+
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         } else if (extraRequest && identifier === 'author') {
-          let allMessages = room.messagesSince(0)
-          for (let message of allMessages) {
-            if (message.author === value) {
-              roomMessages.push(message)
-            }
-          }
-          sendResponse(roomMessages)
+
+          printAllMessages({ author: value }, (messages) => {
+
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         } else if (extraRequest && identifier === 'body') {
-          let allMessages = room.messagesSince(0)
-          for (let message of allMessages) {
-            if (message.body.includes(`${value}`)) {
-              roomMessages.push(message)
-            }
-          }
-          sendResponse(roomMessages)
+
+          printAllMessages({ body: { $in: value } }, (messages) => {
+
+            roomMessages.push(messages)
+            sendResponse(roomMessages)
+          })
         } else {
-          // let messages = room.messagesSince(0)
-          // sendResponse(messages)
 
           printAllMessages({ room: `${roomId}` }, (messages) => {
-
-            // return messages
             roomMessages.push(messages)
             sendResponse(roomMessages)
           })
@@ -183,13 +158,24 @@ function handleRequest(request, response) {
       }
     } else if (path === '/rooms') {
 
-      allTheRooms = house.allRoomIds()
-      sendResponse(allTheRooms)
+      let allRoomsArray = []
+      printAllRooms({}, (rooms) => {
+
+        allRoomsArray.push(rooms)
+        sendResponse(allRoomsArray)
+      })
 
     } else if (path === `/postRoom/${roomId}`) {
       room = house.roomWithId(roomId)
-      roomMessages = room.messagesSince(0)
-      sendResponse(roomMessages)
+      saveRoom(roomId)
+      let roomMessages = []
+
+      printAllMessages({ room: `${roomId}` }, (messages) => {
+        for (let message of messages) {
+          roomMessages.push(message)
+        }
+        sendResponse(roomMessages)
+      })
     } else {
       let fileName = request.url.slice(1)
       assistant.sendFile(fileName)
@@ -208,33 +194,23 @@ function connectAnd(callback) {
     console.log("Connected successfully to server");
 
     const db = client.db(dbName);
-    const collection = db.collection('messages');
+    const messageCollection = db.collection('messages');
+    const roomCollection = db.collection('rooms');
 
-    callback(db, collection, () => {
+    callback(db, messageCollection, roomCollection, () => {
       client.close();
     });
   });
 }
 
-// function printMessage(message) {
-// let when = message.when
-// if (!currentDay) {
-//   currentDay = when;
-// }
-//   return message;
-// }
-// roomID = params[room_id]
-// printAllMessages({room: roomId})
-
 function printAllMessages(query = {}, callback) {
 
-  connectAnd((db, collection, finishUp) => {
-    let cursor = collection.find(query).sort([['when', 1]]);
+  connectAnd((db, messageCollection, roomCollection, finishUp) => {
+    let cursor = messageCollection.find(query).sort([['when', 1]]);
 
     messages = []
 
     cursor.forEach((message) => {
-      // theMessage = printMessage(message);
 
       messages.push(message)
     }, function (err) {
@@ -246,13 +222,49 @@ function printAllMessages(query = {}, callback) {
 
 }
 
+function printAllRooms(query = {}, callback) {
+
+  connectAnd((db, messageCollection, roomCollection, finishUp) => {
+    let cursor = roomCollection.find(query).sort([['when', 1]]);
+
+    rooms = []
+
+    cursor.forEach((room) => {
+
+      rooms.push(room)
+    }, function (err) {
+      assert.equal(null, err);
+      finishUp();
+      callback(rooms)
+    });
+  });
+
+}
+
 function saveMessage(message) {
-  connectAnd((db, collection, finishUp) => {
-    collection.insertOne(message, (err, r) => {
+  connectAnd((db, messageCollection, roomCollection, finishUp) => {
+    messageCollection.insertOne(message, (err, r) => {
       assert.equal(null, err);
       assert.equal(1, r.insertedCount);
       console.log("saved message: " + message)
       finishUp();
     });
+  });
+}
+
+function saveRoom(room) {
+  connectAnd((db, messageCollection, roomCollection, finishUp) => {
+
+    roomCollection.find({ chatRoomId: `${room}` }).toArray((err, roomDoc) => {
+      if (roomDoc.length === 0) {
+        roomCollection.insertOne({ chatRoomId: `${room}` }, (err, roomArray) => {
+          if (err) {
+            console.log(err)
+          }
+          console.log("saved room: " + room)
+        });
+      }
+      finishUp()
+    })
   });
 }

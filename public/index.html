@@ -146,19 +146,20 @@
                 method: 'GET'
             }).then(response => response.json())
                 .then(rooms => {
-                    if (rooms.length > 1) {
+                    
+                    if (rooms[0].length > 1) {
                         let roomList = []
-                        for (let room of rooms) {
-                            room = `<a onclick='submitRoom("${room}")'><div class='class-room-list'>` + room + "</div></a>"
-                            roomList.push(room)
+                        for (let room of rooms[0]) {
+                            room.chatRoomId = `<a onclick='submitRoom("${room.chatRoomId}")'><div class='class-room-list'>` + room.chatRoomId + "</div></a>"
+                            roomList.push(room.chatRoomId)
                         }
                         theRooms.innerHTML = ''
                         theRooms.innerHTML += roomList.join('');
 
-                    } else if (rooms.length != 0) { // if theres only 1 room name
-                        rooms[0] = `<a onclick='submitRoom("${rooms[0]}")'><div class='class-room-list'>` + rooms[0] + "</div></a>"
+                    } else if (rooms[0].length != 0) { // if theres only 1 room name
+                        rooms[0][0].chatRoomId = `<a onclick='submitRoom("${rooms[0][0].chatRoomId}")'><div class='class-room-list'>` + rooms[0][0].chatRoomId + "</div></a>"
                         theRooms.innerHTML = ''
-                        theRooms.innerHTML += rooms.join('');
+                        theRooms.innerHTML += rooms[0][0].chatRoomId;
                     } else {
                     }
                 })
