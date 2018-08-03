@@ -87,7 +87,7 @@ function handleRequest(request, response) {
           })
         } else if (extraRequest && identifier === 'body') {
 
-          printAllMessages({ body: { $in: value } }, (messages) => {
+          printAllMessages({ body: { $in: [value] } }, (messages) => {
 
             roomMessages.push(messages)
             sendResponse(roomMessages)
