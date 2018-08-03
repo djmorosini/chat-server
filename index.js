@@ -1,16 +1,12 @@
 const http = require('http');
 const mime = require('mime-types');
 const Assistant = require('./lib/assistant');
-const House = require('./lib/house')
+const assert = require('assert');
 const MongoClient = require('mongodb').MongoClient;
 const MongoURL = process.env.MONGO_CONNECTION || 'mongodb://localhost:27017'
 const port = process.env.PORT || 5000;
 
-const assert = require('assert');
-
 const dbName = 'my_chat_server'
-
-let house = new House()
 
 http.createServer(handleRequest).listen(port)
 console.log("Listening on port: " + port);
@@ -57,7 +53,6 @@ function handleRequest(request, response) {
             when: new Date().toISOString(),
             room: roomId
           }
-          house.sendMessageToRoom(roomId, message);
           saveMessage(message)
 
           let roomMessages = []
@@ -125,11 +120,8 @@ function handleRequest(request, response) {
             when: new Date().toISOString(),
             room: roomId
           }
-          house.sendMessageToRoom(roomId, message);
-
           saveMessage(message)
 
-          let room = house.roomWithId(roomId)
           let roomMessages = []
           printAllMessages({ room: `${roomId}` }, (messages) => {
 
@@ -140,8 +132,6 @@ function handleRequest(request, response) {
           })
         })
       } else {
-
-        let room = house.roomWithId(roomId)
         let roomMessages = []
 
         if (extraRequest && identifier === 'since') {
@@ -193,7 +183,6 @@ function handleRequest(request, response) {
       })
 
     } else if (path === `/postRoom/${roomId}`) {
-      room = house.roomWithId(roomId)
       saveRoom(roomId)
       let roomMessages = []
 
