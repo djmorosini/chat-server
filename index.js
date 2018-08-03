@@ -212,8 +212,6 @@ function handleRequest(request, response) {
   }
 }
 
-
-
 function connectAnd(callback) {
   console.log("mongo url: " + MongoURL)
   MongoClient.connect(MongoURL, { useNewUrlParser: true }, function (err, client) {

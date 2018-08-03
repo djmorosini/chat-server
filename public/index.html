@@ -22,7 +22,7 @@
     </div>
     <div id='wrapper'>
         <h2 id='room-name'>Room name: general</h2>
-        <button id='showRoomMessages'>Get all messages</button> <button onclick='startAutoRefresh()'>Start Auto Refresh</button> <button onclick='endAutoRefresh()'>End Auto Refresh</button>
+        <button id='showRoomMessages'>Get all messages</button> <button id='startAuto' onclick='startAutoRefresh()'>Start Auto Refresh</button> <button id='stopAuto' onclick='endAutoRefresh()'>End Auto Refresh</button>
         <br>
         <input type='text' id='author-name-search' placeholder="Author Name" />
         <button id='author-search-button'>Get messages by author name</button>
@@ -79,14 +79,20 @@
         let theRooms = document.getElementById('the-rooms')
         let intervalId
 
+        document.getElementById("stopAuto").disabled = true;
+
         populateRoomList()
         // setInterval(() => {showAllMessages()}, 10000)
 
         function startAutoRefresh() {
-            intervalId = setInterval(() => {showAllMessages()}, 10000)
+            document.getElementById("startAuto").disabled = true;
+            document.getElementById("stopAuto").disabled = false;
+            intervalId = setInterval(() => {showAllMessages()}, 8000)
         }
 
         function endAutoRefresh() {
+            document.getElementById("startAuto").disabled = false;
+            document.getElementById("stopAuto").disabled = true;
             clearInterval(intervalId)
         }
 
