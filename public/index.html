@@ -20,40 +20,46 @@
         <br>
         <span id='the-rooms'></span>
     </div>
-    <div id='wrapper'>
-        <h2 id='room-name'>Room name: general</h2>
-        <button id='showRoomMessages'>Get all messages</button> <button id='startAuto' onclick='startAutoRefresh()'>Start Auto Refresh</button> <button id='stopAuto' onclick='endAutoRefresh()'>End Auto Refresh</button>
-        <br>
-        <input type='text' id='author-name-search' placeholder="Author Name" />
-        <button id='author-search-button'>Get messages by author name</button>
-        <br>
-        <input type='text' id='body-search' placeholder="Text to search" />
-        <button id='body-search-button'>Find messages with text</button>
-        <br>
-        <input type='text' id='time-search' placeholder="MM/DD/YYYY HH:MM" />
-        <button id='time-search-button'>Find messages since</button>
-        <br>
-        <br>
-        <label for='room-name-input'>Enter name of room to join:
+    <div id='flex'>
+        <div id='wrapper'>
+            <h2 id='room-name'>Room name: general</h2>
+            <button id='showRoomMessages'>Get all messages</button>
+            <button id='startAuto' onclick='startAutoRefresh()'>Start Auto Refresh</button>
+            <button id='stopAuto' onclick='endAutoRefresh()'>End Auto Refresh</button>
             <br>
-            <span id='room-require'>[Must be only lowercase letters.]</span>
-        </label>
-        <br>
-        <input type='text' id='room-name-input' placeholder="Room Name" />
-        <button id='submit-room' onclick='submitRoom()'>Submit room</button>
-        <br>
-        <br>
-        <div id='form-input'>
-            <form id='chat-form' action='chat' method='POST'>
-                <label for='messageAuthor'>Enter your name:</label>
+            <br>
+            <label for='room-name-input'>Enter name of room to join:
                 <br>
-                <input autocomplete="off" id='messageAuthor' type='text' name='author' placeholder="Name" />
-                <br>
-                <label for='messageBody'>Enter message:</label>
-                <br>
-                <input autocomplete="off" id='messageBody' type='text' name='body' placeholder="Message" />
-                <input id='submit-button' type='submit'>
-            </form>
+                <span id='room-require'>[Must be only lowercase letters.]</span>
+            </label>
+            <br>
+            <input type='text' id='room-name-input' placeholder="Room Name" />
+            <button id='submit-room' onclick='submitRoom()'>Submit room</button>
+            <br>
+            <br>
+            <div id='form-input'>
+                <form id='chat-form' action='chat' method='POST'>
+                    <label for='messageAuthor'>Enter your name:</label>
+                    <br>
+                    <input autocomplete="off" id='messageAuthor' type='text' name='author' placeholder="Name" />
+                    <br>
+                    <label for='messageBody'>Enter message:</label>
+                    <br>
+                    <input autocomplete="off" id='messageBody' type='text' name='body' placeholder="Message" />
+                    <input id='submit-button' type='submit'>
+                </form>
+            </div>
+        </div>
+        <div id='wrapper2'>
+            <h2>Search</h2>
+            <input type='text' id='author-name-search' placeholder="Author Name" />
+            <button id='author-search-button'>Get messages by author name</button>
+            <br>
+            <input type='text' id='body-search' placeholder="Text to search" />
+            <button id='body-search-button'>Find messages with text</button>
+            <br>
+            <input type='text' id='time-search' placeholder="MM/DD/YYYY HH:MM" />
+            <button id='time-search-button'>Find messages since</button>
         </div>
     </div>
     <div>
@@ -87,7 +93,7 @@
         function startAutoRefresh() {
             document.getElementById("startAuto").disabled = true;
             document.getElementById("stopAuto").disabled = false;
-            intervalId = setInterval(() => {showAllMessages()}, 8000)
+            intervalId = setInterval(() => { showAllMessages() }, 8000)
         }
 
         function endAutoRefresh() {
@@ -152,7 +158,7 @@
                 method: 'GET'
             }).then(response => response.json())
                 .then(rooms => {
-                    
+
                     if (rooms[0].length > 1) {
                         let roomList = []
                         for (let room of rooms[0]) {
@@ -388,7 +394,6 @@
                         chatLog.innerHTML = flattenDeep(allMessagesArray).reverse().join('')
                     })
             }
-
         })
 
         messagesSinceButton.addEventListener('click', (event) => {
