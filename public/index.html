@@ -12,63 +12,62 @@
 </head>
 
 <body>
-
-    <h1>Chat App!</h1>
-    <div id='show-rooms'>Show all rooms</div>
-    <div id='room-list'>
-        <span id='drop-title'>Room List:</span>
-        <br>
-        <span id='the-rooms'></span>
-    </div>
-    <div id='flex'>
-        <div id='wrapper'>
-            <h2 id='room-name'>Room name: general</h2>
-            <button id='showRoomMessages'>Get all messages</button>
-            <button id='startAuto' onclick='startAutoRefresh()'>Start Auto Refresh</button>
-            <button id='stopAuto' onclick='endAutoRefresh()'>End Auto Refresh</button>
+    <div id='full-page'>
+        <h1>Chat App!</h1>
+        <div id='show-rooms'>Show all rooms</div>
+        <div id='room-list'>
+            <span id='drop-title'>Room List:</span>
             <br>
-            <br>
-            <label for='room-name-input'>Enter name of room to join:
+            <span id='the-rooms'></span>
+        </div>
+        <div id='flex'>
+            <div id='wrapper'>
+                <h2 id='room-name'>Room name: general</h2>
+                <button id='showRoomMessages'>Get all messages</button>
+                <button id='startAuto' onclick='startAutoRefresh()'>Start Auto Refresh</button>
+                <button id='stopAuto' onclick='endAutoRefresh()'>End Auto Refresh</button>
                 <br>
-                <span id='room-require'>[Must be only lowercase letters.]</span>
-            </label>
-            <br>
-            <input type='text' id='room-name-input' placeholder="Room Name" />
-            <button id='submit-room' onclick='submitRoom()'>Submit room</button>
-            <br>
-            <br>
-            <div id='form-input'>
-                <form id='chat-form' action='chat' method='POST'>
-                    <label for='messageAuthor'>Enter your name:</label>
+                <br>
+                <label for='room-name-input'>Enter name of room to join:
                     <br>
-                    <input autocomplete="off" id='messageAuthor' type='text' name='author' placeholder="Name" />
-                    <br>
-                    <label for='messageBody'>Enter message:</label>
-                    <br>
-                    <input autocomplete="off" id='messageBody' type='text' name='body' placeholder="Message" />
-                    <input id='submit-button' type='submit'>
-                </form>
+                    <span id='room-require'>[Must be only lowercase letters.]</span>
+                </label>
+                <br>
+                <input type='text' id='room-name-input' placeholder="Room Name" />
+                <button id='submit-room' onclick='submitRoom()'>Submit room</button>
+                <br>
+                <br>
+                <div id='form-input'>
+                    <form id='chat-form' action='chat' method='POST'>
+                        <label for='messageAuthor'>Enter your name:</label>
+                        <br>
+                        <input autocomplete="off" id='messageAuthor' type='text' name='author' placeholder="Name" />
+                        <br>
+                        <label for='messageBody'>Enter message:</label>
+                        <br>
+                        <input autocomplete="off" id='messageBody' type='text' name='body' placeholder="Message" />
+                        <input id='submit-button' type='submit'>
+                    </form>
+                </div>
+            </div>
+            <div id='wrapper2'>
+                <h2>Search</h2>
+                <input type='text' id='author-name-search' placeholder="Author Name" />
+                <button id='author-search-button'>Get messages by author name</button>
+                <br>
+                <input type='text' id='body-search' placeholder="Text to search" />
+                <button id='body-search-button'>Find messages with text</button>
+                <br>
+                <input type='text' id='time-search' placeholder="MM/DD/YYYY HH:MM" />
+                <button id='time-search-button'>Find messages since</button>
             </div>
         </div>
-        <div id='wrapper2'>
-            <h2>Search</h2>
-            <input type='text' id='author-name-search' placeholder="Author Name" />
-            <button id='author-search-button'>Get messages by author name</button>
-            <br>
-            <input type='text' id='body-search' placeholder="Text to search" />
-            <button id='body-search-button'>Find messages with text</button>
-            <br>
-            <input type='text' id='time-search' placeholder="MM/DD/YYYY HH:MM" />
-            <button id='time-search-button'>Find messages since</button>
-        </div>
-    </div>
-    <div>
         <h2 id='room-messages-title'>Room messages:</h2>
         <div id='chat-log'></div>
-        <div id='invalid-alert'>Room ID must be only lowercase letters.
-            <br>
-            <button onclick='closeAlert()' id='close-alert'>Close Alert</button>
-        </div>
+    </div>
+    <div id='invalid-alert'>Room ID must be only lowercase letters.
+        <br>
+        <button onclick='closeAlert()' id='close-alert'>Close Alert</button>
     </div>
 
     <script>
