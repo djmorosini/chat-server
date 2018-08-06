@@ -187,7 +187,8 @@ button {
         width: 275px;
     }
     button {
-        font-size: 30px;
+        font-size: 26px;
+        margin: 5px;
     }
     #submit-button {
         font-size: 30px;
