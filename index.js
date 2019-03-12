@@ -219,7 +219,7 @@ function connectAnd(callback) {
 
 function printAllMessages(query = {}, callback) {
 
-  connectAnd((db, messageCollection, roomCollection, finishUp) => {
+  connectAnd((db, messageCollection, roomCollection, finishConnection) => {
     let cursor = messageCollection.find(query).sort([['when', 1]]);
 
     messages = []
@@ -229,7 +229,7 @@ function printAllMessages(query = {}, callback) {
       messages.push(message)
     }, function (err) {
       assert.equal(null, err);
-      finishUp();
+      finishConnection();
       callback(messages)
     });
   });
@@ -238,7 +238,7 @@ function printAllMessages(query = {}, callback) {
 
 function printAllRooms(query = {}, callback) {
 
-  connectAnd((db, messageCollection, roomCollection, finishUp) => {
+  connectAnd((db, messageCollection, roomCollection, finishConnection) => {
     let cursor = roomCollection.find(query).sort([['when', 1]]);
 
     rooms = []
@@ -248,7 +248,7 @@ function printAllRooms(query = {}, callback) {
       rooms.push(room)
     }, function (err) {
       assert.equal(null, err);
-      finishUp();
+      finishConnection();
       callback(rooms)
     });
   });
@@ -256,18 +256,18 @@ function printAllRooms(query = {}, callback) {
 }
 
 function saveMessage(message) {
-  connectAnd((db, messageCollection, roomCollection, finishUp) => {
+  connectAnd((db, messageCollection, roomCollection, finishConnection) => {
     messageCollection.insertOne(message, (err, r) => {
       assert.equal(null, err);
       assert.equal(1, r.insertedCount);
       console.log("saved message: " + message)
-      finishUp();
+      finishConnection();
     });
   });
 }
 
 function saveRoom(room) {
-  connectAnd((db, messageCollection, roomCollection, finishUp) => {
+  connectAnd((db, messageCollection, roomCollection, finishConnection) => {
 
     roomCollection.find({ chatRoomId: `${room}` }).toArray((err, roomDoc) => {
       if (roomDoc.length === 0) {
@@ -278,7 +278,7 @@ function saveRoom(room) {
           console.log("saved room: " + room)
         });
       }
-      finishUp()
+      finishConnection()
     })
   });
 }
