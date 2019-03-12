@@ -134,8 +134,8 @@ button {
     padding: 5px 10px 10px 10px;
     display: none;
     position: absolute;
-    background-color: gray;
-    border: 1px solid rgba(2, 5, 180, 1);
+    background-color: rgba(2, 5, 180, 0.9);
+    border: 1px solid black;
 }
 #wrapper2:hover {
     display: inline-block;
@@ -176,14 +176,16 @@ button {
     padding: 2px;
 }
 #full-page {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.8);
     width: 97.5%;
     padding: 10px 10px;
 }
 #searchTitle {
-    margin: 0;
     padding: 10px;
+    margin: 5px;
     width: fit-content;
+    background-color: black;
+    border: 1px solid blue;
 }
 #searchTitle:hover + #wrapper2 {
     display: inline-block;
@@ -192,6 +194,11 @@ button {
 #sidebar {
     float: right;
 }
+
+@media (max-width: 780px){
+
+}
+
 @media only screen and (max-device-width: 480px){
     body {
         font-size: 40px;
