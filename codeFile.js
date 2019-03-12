@@ -27,13 +27,11 @@ function endAutoRefresh() {
 }
 
 function showAllMessages() {
-  console.log("show all function")
   if (roomInput === '') {
     chatPath = '/chat'
   } else {
     chatPath = '/chat' + "/" + roomInput
   }
-  // console.log(chatPath)
 
   function flattenDeep(arr1) {
     return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
@@ -76,8 +74,6 @@ function closeAlert() {
 }
 
 function populateRoomList() {
-  // theRooms.innerHTML = ''
-  console.log("called populate list")
   fetch('/rooms', {
     method: 'GET'
   }).then(response => response.json())
@@ -176,14 +172,12 @@ chatForm.addEventListener('submit', (event) => {
 })
 
 showMessageButton.addEventListener('click', (event) => {
-  console.log('show all messages!')
   document.getElementById('messageBody').value = ''
   if (roomInput === '') {
     chatPath = '/chat'
   } else {
     chatPath = '/chat' + "/" + roomInput
   }
-  // console.log(chatPath)
 
   function flattenDeep(arr1) {
     return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
@@ -195,7 +189,6 @@ showMessageButton.addEventListener('click', (event) => {
   }).then(response => response.json())
     .then(messages => {
       allMessagesArray = messages.map((message) => {
-        // console.log(message);
         if (message.body) {
           return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
         } else if (message.length > 0) {
@@ -223,9 +216,7 @@ showMessageButton.addEventListener('click', (event) => {
 
 authorSearchButton.addEventListener('click', (event) => {
   endAutoRefresh()
-  console.log('show messages with author!')
   let authorValue = document.getElementById("author-name-search").value
-  // document.getElementById('author-name-search').value = ''
   if (roomInput === '') {
     chatPath = '/chat'
   } else {
@@ -233,7 +224,6 @@ authorSearchButton.addEventListener('click', (event) => {
   }
   if (authorValue) {
     chatPath = chatPath + "?author=" + authorValue
-    // console.log(chatPath)
 
     function flattenDeep(arr1) {
       return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
@@ -274,9 +264,7 @@ authorSearchButton.addEventListener('click', (event) => {
 
 bodySearchButton.addEventListener('click', (event) => {
   endAutoRefresh()
-  console.log('show messages including text!')
   let bodyValue = document.getElementById("body-search").value
-  // document.getElementById('messageBody').value = ''
   if (roomInput === '') {
     chatPath = '/chat'
   } else {
@@ -322,9 +310,7 @@ bodySearchButton.addEventListener('click', (event) => {
 
 messagesSinceButton.addEventListener('click', (event) => {
   endAutoRefresh()
-  console.log('show messages since!')
   let messagesSinceValue = new Date(document.getElementById("time-search").value).toISOString()
-  // document.getElementById('messageBody').value = ''
   if (roomInput === '') {
     chatPath = '/chat'
   } else {
@@ -332,7 +318,6 @@ messagesSinceButton.addEventListener('click', (event) => {
   }
   if (messagesSinceValue) {
     chatPath = chatPath + "?since=" + messagesSinceValue
-    // console.log(chatPath)
 
     function flattenDeep(arr1) {
       return arr1.reduce(
@@ -345,7 +330,6 @@ messagesSinceButton.addEventListener('click', (event) => {
     }).then(response => response.json())
       .then(messages => {
         allMessagesArray = messages.map((message) => {
-          // console.log(message);
           if (message.body) {
             return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
           } else if (message.length > 0) {
