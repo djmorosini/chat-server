@@ -45,10 +45,9 @@ function handleRequest(request, response) {
       if (error) {
         console.log(error);
         if (error.code === 'ENOENT') {
-          let safeFileName = file.substring(this.publicDir.length);
-          this.sendError(404, `File ${safeFileName} not found`); // 404 Not Found
+          sendError(404, `File not found`);
         } else {
-          this.sendError(500, 'Unknown error'); // 404 Not Found
+          sendError(500, 'Unknown error');
         }
       } else {
         let contentType = mime.lookup(file);

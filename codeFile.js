@@ -17,7 +17,7 @@ startAutoRefresh()
 function startAutoRefresh() {
   document.getElementById("startAuto").disabled = true;
   document.getElementById("stopAuto").disabled = false;
-  intervalId = setInterval(() => { showAllMessages() }, 8000)
+  intervalId = setInterval(() => { showAllMessages() }, 5000)
 }
 
 function endAutoRefresh() {
@@ -43,7 +43,6 @@ function showAllMessages() {
   }).then(response => response.json())
     .then(messages => {
       allMessagesArray = messages.map((message) => {
-        // console.log(message);
         if (message.body) {
           return "<div class='message-class'><u>By:</u> " + message.author + " <u>At:</u> " + new Date(message.when) + " <u>Room:</u> " + message.room + "<br><u>Body:</u> " + message.body + "</div>";
         } else if (message.length > 0) {
