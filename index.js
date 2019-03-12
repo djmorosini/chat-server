@@ -1,6 +1,6 @@
 const http = require('http');
+const fs = require('fs');
 const mime = require('mime-types');
-const Assistant = require('./lib/assistant');
 const assert = require('assert');
 const MongoClient = require('mongodb').MongoClient;
 const MongoURL = process.env.MONGO_CONNECTION || 'mongodb://localhost:27017'
@@ -13,9 +13,7 @@ console.log("Listening on port: " + port);
 console.log("MONGO URL IS: " + MongoURL);
 
 function handleRequest(request, response) {
-  console.log('request.url = ' + request.url)
-  let assistant = new Assistant(request, response)
-  let path = assistant.path
+  let path = request.url
 
   let roomId = path.slice(1).split('/')[1]
 
@@ -29,15 +27,72 @@ function handleRequest(request, response) {
     [identifier, value] = keyValues;
   }
 
+  function finishResponse(contentType, data) {
+    response.setHeader('Content-Type', contentType + '; charset=utf-8');
+    response.write(data);
+    response.end();
+  }
+
   function sendResponse(messages) {
     let data = JSON.stringify(messages);
     let type = mime.lookup('json')
-    assistant.finishResponse(type, data)
+    finishResponse(type, data)
+  }
+
+  function sendFile(file) {
+    console.log('Sending ' + file);
+    fs.readFile(file, (error, data)=> {
+      if (error) {
+        console.log(error);
+        if (error.code === 'ENOENT') {
+          let safeFileName = file.substring(this.publicDir.length);
+          this.sendError(404, `File ${safeFileName} not found`); // 404 Not Found
+        } else {
+          this.sendError(500, 'Unknown error'); // 404 Not Found
+        }
+      } else {
+        let contentType = mime.lookup(file);
+        finishResponse(contentType, data);
+      }
+    });
+  }
+
+  function sendError(statusCode, message) {
+    console.log(`Error ${statusCode}: ${message}`);
+    response.statusCode = statusCode;
+    finishResponse('text/plain', message);
+  }
+
+  function decodeParams(query) {
+    let fields = query.split('&');
+    let params = {};
+    let author;
+    let value;
+    for (let field of fields) {
+      // see http://unixpapa.com/js/querystring.html section 3.1
+      [ author, value ] = field.split('=');
+      value = value.replace(/\+/g,' ');
+      params[author] = decodeURIComponent(value);
+    }
+    return params;
+  }
+
+  function parsePostParams(callback) {
+    let body = [];
+    request.on('data', (chunk) => {
+      body.push(chunk);
+    }).on('end', () => {
+      body = Buffer.concat(body).toString();
+      // at this point, `body` has the entire request body stored in it as a string
+      console.log("received post body: " + body)
+      let params = decodeParams(body);
+      callback(params);
+    });
   }
 
   try {
     if (path === "/") {
-      assistant.sendFile('./public/index.html')
+      sendFile('./public/index.html')
 
     } else if (path === "/chat") {
 
@@ -46,7 +101,7 @@ function handleRequest(request, response) {
         if (!roomId) {
           roomId = 'general'
         }
-        assistant.parsePostParams((params) => {
+        parsePostParams((params) => {
           let message = {
             author: params.author || 'Anonymous',
             body: params.body || 'nothing',
@@ -113,7 +168,7 @@ function handleRequest(request, response) {
 
       if (request.method === "POST") {
         console.log('Parsing the POST')
-        assistant.parsePostParams((params) => {
+        parsePostParams((params) => {
           let message = {
             author: params.author || 'Anonymous',
             body: params.body || 'nothing',
@@ -194,10 +249,10 @@ function handleRequest(request, response) {
       })
     } else {
       let fileName = request.url.slice(1)
-      assistant.sendFile(fileName)
+      sendFile(fileName)
     }
   } catch (error) {
-    assistant.sendError(404, "Error: " + error.toString())
+    sendError(404, "Error: " + error.toString())
   }
 }
 

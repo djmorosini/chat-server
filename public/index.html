@@ -19,36 +19,36 @@
             <br>
             <span id='the-rooms'></span>
         </div>
-        <h2 id='room-name'>Room name: general</h2>
         <div id='sidebar'>
-            <h2 id='searchTitle'>Search</h2>
-            <div id='wrapper2'>
-                <input type='text' id='author-name-search' placeholder="Author Name" />
-                <button id='author-search-button'>Get messages by author name</button>
-                <br>
-                <input type='text' id='body-search' placeholder="Text to search" />
-                <button id='body-search-button'>Find messages with text</button>
-                <br>
-                <input type='text' id='time-search' placeholder="MM/DD/YYYY HH:MM" />
-                <button id='time-search-button'>Find messages since</button>
-            </div>
-            <div id='wrapper'>
-                <div id='button-wrap'>
-                    <button id='showRoomMessages'>Get all messages</button>
-                    <button id='startAuto' onclick='startAutoRefresh()'>Start Auto Refresh</button>
-                    <button id='stopAuto' onclick='endAutoRefresh()'>End Auto Refresh</button>
-                </div>
-                <br>
-                <br>
-                <label for='room-name-input'>Enter name of room to join:
+                <h2 id='searchTitle'>Search</h2>
+                <div id='wrapper2'>
+                    <input type='text' id='author-name-search' placeholder="Author Name" />
+                    <button id='author-search-button'>Get messages by author name</button>
                     <br>
-                    <span id='room-require'>[Must be only lowercase letters.]</span>
-                </label>
-                <br>
-                <input type='text' id='room-name-input' placeholder="Room Name" />
-                <button id='submit-room' onclick='submitRoom()'>Submit room</button>
+                    <input type='text' id='body-search' placeholder="Text to search" />
+                    <button id='body-search-button'>Find messages with text</button>
+                    <br>
+                    <input type='text' id='time-search' placeholder="MM/DD/YYYY HH:MM" />
+                    <button id='time-search-button'>Find messages since</button>
+                </div>
+                <div id='wrapper'>
+                    <div id='button-wrap'>
+                        <button id='showRoomMessages'>Get all messages</button>
+                        <button id='startAuto' onclick='startAutoRefresh()'>Start Auto Refresh</button>
+                        <button id='stopAuto' onclick='endAutoRefresh()'>End Auto Refresh</button>
+                    </div>
+                    <br>
+                    <br>
+                    <label for='room-name-input'>Enter name of room to join:
+                        <br>
+                        <span id='room-require'>[Must be only lowercase letters.]</span>
+                    </label>
+                    <br>
+                    <input type='text' id='room-name-input' placeholder="Room Name" />
+                    <button id='submit-room' onclick='submitRoom()'>Submit room</button>
+                </div>
             </div>
-        </div>
+        <h2 id='room-name'>Room name: general</h2>
         <div id='form-input'>
             <form id='chat-form' action='chat' method='POST'>
                 <label for='messageAuthor'>Enter your name:</label>

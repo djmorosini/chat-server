@@ -13,7 +13,6 @@ let intervalId
 populateRoomList()
 showAllMessages()
 startAutoRefresh()
-// setInterval(() => {showAllMessages()}, 10000)
 
 function startAutoRefresh() {
   document.getElementById("startAuto").disabled = true;

@@ -190,8 +190,6 @@ button {
     color: white;
 }
 #sidebar {
-    position: relative;
-    top: -100px;
     float: right;
 }
 @media only screen and (max-device-width: 480px){
@@ -211,6 +209,11 @@ button {
     }
     #room-name {
         width: 34%;
+    }
+    #wrapper2 {
+        position: absolute;
+        left: 20px;
+        width: 750px;
     }
     #button-wrap {
         display: flex;
